@@ -118,6 +118,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+
 				<configuration>
 					<excludes>
 						<exclude>
@@ -130,6 +131,9 @@
 								<artifactId>mapstruct-processor</artifactId>
 								<version>${org.mapstruct.version}</version>
 							</path>
+						</annotationProcessorPaths>
+						<annotationProcessorPaths>
+							<path>C:\Users\ProTech247\Downloads\SchoolCompetition\target</path>
 						</annotationProcessorPaths>
 					</excludes>
 				</configuration>
