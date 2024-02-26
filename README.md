@@ -1,1 +1,1 @@
-# SchoolCompetiton
+# SchoolCompetition
