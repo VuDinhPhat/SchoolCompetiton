@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import java.sql.Date;
 @Table(name = "Coach")
 public class Coach {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -24,13 +25,13 @@ public class Coach {
     @Column(name = "sex")
     private char sex;
 
-//    @ManyToOne
-//    @JoinColumn(name = "school_id")
-//    private School school;
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    private School school;
 //
-//    @OneToMany(mappedBy = "coach")
-//    private List<Team> teams;
+    @OneToMany(mappedBy = "coach")
+    private List<Team> teams;
 //
-//    @OneToMany(mappedBy = "coach")
-//    private List<Contestant> contestants;
+    @OneToMany(mappedBy = "coach")
+    private List<Contestant> contestants;
 }

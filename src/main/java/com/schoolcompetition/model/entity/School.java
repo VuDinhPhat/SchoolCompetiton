@@ -5,13 +5,15 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "School")
 public class School {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -20,11 +22,14 @@ public class School {
     @Column(name = "address")
     private String address;
 
+    @OneToMany(mappedBy = "school")
+    private List<Student> students;
+
 //    @OneToMany(mappedBy = "school")
 //    private List<Student> students;
 //
-//    @OneToMany(mappedBy = "school")
-//    private List<Coach> coaches;
+    @OneToMany(mappedBy = "school")
+    private List<Coach> coaches;
 //
 //    @OneToMany(mappedBy = "school")
 //    private List<Team> teams;

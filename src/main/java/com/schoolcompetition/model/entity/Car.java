@@ -1,9 +1,6 @@
 package com.schoolcompetition.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +10,7 @@ import lombok.Setter;
 @Table(name = "Car")
 public class Car {    
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")
@@ -24,6 +22,10 @@ public class Car {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "team_id")
-    private int teamId;
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @OneToOne(mappedBy = "car")
+    private Result result;
 }

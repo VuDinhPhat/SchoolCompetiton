@@ -1,25 +1,21 @@
 package com.schoolcompetition.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "Matchhhhh")
+@Table(name = "Matchh")
 public class Match {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-    @Column(name = "bracket_id")
-    private int bracketId;
 
     @Column(name = "name")
     private String name;
@@ -33,6 +29,10 @@ public class Match {
     @Column(name = "lap")
     private int lap;
 
+    @ManyToOne
+    @JoinColumn(name = "bracket_id")
+    private Bracket bracket;
 
-
+    @OneToMany(mappedBy = "match")
+    private List<Result> results;
 }

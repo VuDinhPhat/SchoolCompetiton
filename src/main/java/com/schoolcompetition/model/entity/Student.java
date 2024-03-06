@@ -13,7 +13,7 @@ import java.util.Date;
 public class Student {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -25,6 +25,12 @@ public class Student {
     @Column(name = "sex")
     private char sex;
 
+    @ManyToOne
+    @JoinColumn(name = "school_id")
+    private School school;
+
+    @OneToOne(mappedBy = "student")
+    private Contestant contestant;
 //    @ManyToOne
 //    @JoinColumn(name = "school_id")
 //    private School school;

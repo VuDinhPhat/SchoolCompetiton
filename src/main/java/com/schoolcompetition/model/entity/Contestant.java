@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -12,18 +14,21 @@ public class Contestant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @OneToOne
-//    @JoinColumn(name = "student_id")
-//    private Student student;
+    @OneToOne
+    @JoinColumn(name = "student_id")
+    private Student student;
 
-//    @ManyToOne
-//    @JoinColumn(name = "coach_id")
-//    private Coach coach;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "team_id")
-//    private Team team;
-//
-//    @OneToMany(mappedBy = "contestant")
-//    private List<Result> results;
+    @ManyToOne
+    @JoinColumn(name = "coach_id")
+    private Coach coach;
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @OneToMany(mappedBy = "contestant")
+    private List<Result> results;
+
+
+
 }

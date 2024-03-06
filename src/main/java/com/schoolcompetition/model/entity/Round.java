@@ -1,11 +1,10 @@
 package com.schoolcompetition.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,6 +12,7 @@ import lombok.Setter;
 @Table(name = "Round")
 public class Round {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "name")
@@ -23,4 +23,7 @@ public class Round {
 
     @Column(name = "map")
     private String map;
+
+    @OneToMany(mappedBy = "round")
+    private List<Bracket> brackets;
 }

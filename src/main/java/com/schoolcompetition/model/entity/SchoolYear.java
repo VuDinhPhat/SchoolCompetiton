@@ -13,12 +13,12 @@ import java.util.List;
 @Table(name = "School_Year")
 public class SchoolYear {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "year")
     private int year;
 
-//    @OneToMany(mappedBy = "schoolYear")
-//    private List<Competition> competitions;
+    @OneToMany(mappedBy = "schoolYear")
+    private List<Competition> competitions;
 }
