@@ -10,4 +10,5 @@ public class SchoolCompetitionApplication {
 		SpringApplication.run(SchoolCompetitionApplication.class, args);
 	}
 
+
 }

@@ -1,6 +1,7 @@
 package com.schoolcompetition.controller;
 
 import com.schoolcompetition.model.dto.ApiResponse;
+import com.schoolcompetition.model.dto.ResponseObj;
 import com.schoolcompetition.model.entity.Bracket;
 import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.model.entity.SchoolYear;
@@ -21,10 +22,8 @@ public class BracketController {
     BracketService bracketService;
 
     @GetMapping(value = {"getAll"})
-    public ResponseEntity<ApiResponse<List<Bracket>>> getAll() {
-        ApiResponse apiResponse = new ApiResponse();
-        List<Bracket> brackets = bracketService.getAllBracket();
-        apiResponse.ok(brackets);
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ResponseObj> getAll() {
+
+        return bracketService.getAllBracket();
     }
 }
