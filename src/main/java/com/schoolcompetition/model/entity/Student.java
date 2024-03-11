@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,7 @@ public class Student {
     private School school;
 
     @OneToOne(mappedBy = "student")
+    @JsonIgnore
     private Contestant contestant;
 
 }

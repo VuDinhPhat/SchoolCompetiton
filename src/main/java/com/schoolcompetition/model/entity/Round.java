@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class Round {
     private String map;
 
     @OneToMany(mappedBy = "round")
+    @JsonIgnore
     private List<Bracket> brackets;
 
     @ManyToOne

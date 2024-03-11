@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,8 +29,10 @@ public class Team {
     private Competition competition;
 
     @OneToMany(mappedBy = "team")
+    @JsonIgnore
     private List<Car> cars;
 
     @OneToMany(mappedBy = "team")
+    @JsonIgnore
     private List<Contestant> contestants;
 }

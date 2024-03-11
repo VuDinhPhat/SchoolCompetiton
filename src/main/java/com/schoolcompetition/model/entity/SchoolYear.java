@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -20,5 +21,6 @@ public class SchoolYear {
     private int year;
 
     @OneToMany(mappedBy = "schoolYear")
+    @JsonIgnore
     private List<Competition> competitions;
 }

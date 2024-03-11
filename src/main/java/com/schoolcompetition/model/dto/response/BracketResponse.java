@@ -4,8 +4,7 @@ import com.schoolcompetition.model.entity.Round;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Getter
 @Setter
 @Builder
@@ -13,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 public class BracketResponse {
     int id;
     String name;
-    private Round round;
+    Round round;
 }

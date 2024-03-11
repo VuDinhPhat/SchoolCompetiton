@@ -8,7 +8,7 @@ public class BrackerMapper {
         return BracketResponse.builder()
                 .id(bracket.getId())
                 .name(bracket.getName())
-                //.round(bracket.getRound())
+                .round(bracket.getRound())
                 .build();
     }
 }

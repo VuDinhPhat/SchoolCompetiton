@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
@@ -27,9 +28,11 @@ public class Competition {
     private String holdPlace;
 
     @OneToMany(mappedBy = "competition")
+    @JsonIgnore
     private List<Team> teams;
 
     @OneToMany(mappedBy = "competition")
+    @JsonIgnore
     private List<Round> rounds;
 
     @ManyToOne

@@ -1,4 +1,5 @@
 package com.schoolcompetition.model.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class Contestant {
     private Team team;
 
     @OneToMany(mappedBy = "contestant")
+    @JsonIgnore
     private List<Result> results;
 
 
