@@ -1,6 +1,7 @@
 package com.schoolcompetition.controller;
 
 import com.schoolcompetition.model.dto.ApiResponse;
+import com.schoolcompetition.model.dto.ResponseObj;
 import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.model.entity.SchoolYear;
 import com.schoolcompetition.service.SchoolService;
@@ -20,10 +21,7 @@ public class SchoolYearController {
     SchoolYearService schoolYearService;
 
     @GetMapping(value = {"getAll"})
-    public ResponseEntity<ApiResponse<List<SchoolYear>>> getAllClass() {
-        ApiResponse apiResponse = new ApiResponse();
-        List<SchoolYear> schoolYears = schoolYearService.getAll();
-        apiResponse.ok(schoolYears);
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ResponseObj> getAll() {
+        return schoolYearService.getAllSchoolYear();
     }
 }
