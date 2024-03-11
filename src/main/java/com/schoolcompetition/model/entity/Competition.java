@@ -15,7 +15,7 @@ import java.util.List;
 public class Competition {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "name")
     private String name;
@@ -28,6 +28,9 @@ public class Competition {
 
     @OneToMany(mappedBy = "competition")
     private List<Team> teams;
+
+    @OneToMany(mappedBy = "competition")
+    private List<Round> rounds;
 
     @ManyToOne
     @JoinColumn(name = "school_year_id")

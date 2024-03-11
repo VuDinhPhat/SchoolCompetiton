@@ -25,13 +25,7 @@ public class School {
     @OneToMany(mappedBy = "school")
     private List<Student> students;
 
-//    @OneToMany(mappedBy = "school")
-//    private List<Student> students;
-//
     @OneToMany(mappedBy = "school")
     private List<Coach> coaches;
-//
-//    @OneToMany(mappedBy = "school")
-//    private List<Team> teams;
 
 }

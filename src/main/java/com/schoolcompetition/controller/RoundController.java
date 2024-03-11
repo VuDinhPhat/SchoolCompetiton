@@ -1,9 +1,7 @@
 package com.schoolcompetition.controller;
 
-import com.schoolcompetition.model.dto.ApiResponse;
-import com.schoolcompetition.model.entity.Result;
+import com.schoolcompetition.model.dto.response.ApiResponse;
 import com.schoolcompetition.model.entity.Round;
-import com.schoolcompetition.service.ResultService;
 import com.schoolcompetition.service.RoundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

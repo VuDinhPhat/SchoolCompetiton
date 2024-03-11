@@ -1,19 +1,12 @@
 package com.schoolcompetition.controller;
 
-import com.schoolcompetition.model.dto.ApiResponse;
-import com.schoolcompetition.model.dto.ResponseObj;
-import com.schoolcompetition.model.entity.Bracket;
-import com.schoolcompetition.model.entity.Competition;
-import com.schoolcompetition.model.entity.SchoolYear;
+import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.service.BracketService;
-import com.schoolcompetition.service.SchoolYearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/bracket")

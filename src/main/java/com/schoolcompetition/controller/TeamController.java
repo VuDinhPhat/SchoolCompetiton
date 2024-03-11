@@ -1,6 +1,6 @@
 package com.schoolcompetition.controller;
 
-import com.schoolcompetition.model.dto.ApiResponse;
+import com.schoolcompetition.model.dto.response.ApiResponse;
 import com.schoolcompetition.model.entity.Team;
 import com.schoolcompetition.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;

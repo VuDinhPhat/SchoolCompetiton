@@ -1,4 +1,4 @@
-package com.schoolcompetition.model.dto;
+package com.schoolcompetition.model.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

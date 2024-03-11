@@ -28,10 +28,10 @@ public class Coach {
     @ManyToOne
     @JoinColumn(name = "school_id")
     private School school;
-//
+
     @OneToMany(mappedBy = "coach")
     private List<Team> teams;
-//
+
     @OneToMany(mappedBy = "coach")
     private List<Contestant> contestants;
 }

@@ -18,12 +18,13 @@ public class Round {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "competition_id")
-    private int competitionId;
-
     @Column(name = "map")
     private String map;
 
     @OneToMany(mappedBy = "round")
     private List<Bracket> brackets;
+
+    @ManyToOne
+    @JoinColumn(name = "competition_id")
+    private Competition competition;
 }

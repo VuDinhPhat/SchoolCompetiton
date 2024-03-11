@@ -31,10 +31,5 @@ public class Student {
 
     @OneToOne(mappedBy = "student")
     private Contestant contestant;
-//    @ManyToOne
-//    @JoinColumn(name = "school_id")
-//    private School school;
-//
-//    @OneToMany(mappedBy = "student")
-//    private List<Contestant> contestants;
+
 }

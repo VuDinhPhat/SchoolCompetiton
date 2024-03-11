@@ -13,20 +13,11 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-//    @Column(name = "contestant_id")
-//    private int contestantId;
-
-//    @Column(name = "match_id")
-//    private int matchId;
-
     @Column(name = "score")
     private int score;
 
     @Column(name = "finish_time")
     private String finishTime;
-
-//    @Column(name = "car_id")
-//    private int carId;
 
     @ManyToOne
     @JoinColumn(name = "contestant_id")

@@ -1,7 +1,8 @@
 package com.schoolcompetition.service.Impl;
 
-import com.schoolcompetition.model.dto.BracketResponse;
-import com.schoolcompetition.model.dto.ResponseObj;
+import com.schoolcompetition.mapper.BrackerMapper;
+import com.schoolcompetition.model.dto.response.BracketResponse;
+import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Bracket;
 import com.schoolcompetition.repository.BracketRepository;
 import com.schoolcompetition.service.BracketService;
@@ -11,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BracketServiceImpl implements BracketService {
@@ -21,27 +24,27 @@ public class BracketServiceImpl implements BracketService {
     @Override
     public ResponseEntity<ResponseObj> getAllBracket() {
         List<Bracket> bracketList = bracketRepository.findAll();
-        List<BracketResponse> responses = new ArrayList<>();
+        List<BracketResponse> bracketResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
 
         for (Bracket bracket : bracketList) {
-            BracketResponse br = new BracketResponse();
-            br.id = bracket.getId();
-            br.name = bracket.getName();
-            responses.add(br);
+            bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
         }
+        response.put("Bracket", bracketResponses);
 
-        if (!responses.isEmpty()) {
+        if (!bracketResponses.isEmpty()) {
             ResponseObj responseObj = ResponseObj.builder()
                     .status("OK")
-                    .message("Load successfully")
-                    .data(responses)
+                    .message("Load all Bracket successfully")
+                    .data(response)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         }
 
         ResponseObj responseObj = ResponseObj.builder()
                 .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .data(responses)
+                .message("Load all Bracket failed")
+                .data(null)
                 .build();
         return ResponseEntity.ok().body(responseObj);
     }

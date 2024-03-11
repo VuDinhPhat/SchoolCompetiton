@@ -1,7 +1,7 @@
 package com.schoolcompetition.handle;
 
 import com.schoolcompetition.exception.NotFoundException;
-import com.schoolcompetition.model.dto.ApiResponse;
+import com.schoolcompetition.model.dto.response.ApiResponse;
 import com.schoolcompetition.model.dto.StatusEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

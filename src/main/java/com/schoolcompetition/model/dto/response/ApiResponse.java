@@ -1,6 +1,7 @@
-package com.schoolcompetition.model.dto;
+package com.schoolcompetition.model.dto.response;
 
 
+import com.schoolcompetition.model.dto.StatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
