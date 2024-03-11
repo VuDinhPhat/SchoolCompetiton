@@ -19,12 +19,6 @@ public class Team {
     @Column(name = "name")
     private String name;
 
-//    @Column(name = "coach_id")
-//    private int coachId;
-//
-//    @Column(name = "competition_id")
-//    private int competitionId;
-
     @ManyToOne
     @JoinColumn(name = "coach_id")
     private Coach coach;

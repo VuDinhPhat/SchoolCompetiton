@@ -1,6 +1,7 @@
 package com.schoolcompetition.controller;
 
 import com.schoolcompetition.model.dto.response.ApiResponse;
+import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.service.CompetitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,7 @@ public class CompetitionController {
     CompetitionService competitionService;
 
     @GetMapping(value = {"getAll"})
-    public ResponseEntity<ApiResponse<List<Competition>>> getAllClass() {
-        ApiResponse apiResponse = new ApiResponse();
-        List<Competition> competitions = competitionService.getAllCompetition();
-        apiResponse.ok(competitions);
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ResponseObj> getAllClass() {
+        return competitionService.getAllCompetition();
     }
 }

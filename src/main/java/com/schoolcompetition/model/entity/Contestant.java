@@ -12,7 +12,7 @@ import java.util.List;
 public class Contestant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @OneToOne
     @JoinColumn(name = "student_id")

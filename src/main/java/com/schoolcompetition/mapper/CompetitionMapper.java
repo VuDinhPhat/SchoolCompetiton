@@ -10,7 +10,7 @@ public class CompetitionMapper {
                 .name(competition.getName())
                 .description(competition.getDescription())
                 .holdPlace(competition.getHoldPlace())
-                .schoolYear(competition.getSchoolYear())
+                //.schoolYear(competition.getSchoolYear())
                 .build();
     }
 }
