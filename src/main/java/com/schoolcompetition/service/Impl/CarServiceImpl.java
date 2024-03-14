@@ -1,11 +1,16 @@
 package com.schoolcompetition.service.Impl;
 
 import com.schoolcompetition.mapper.CarMapper;
+import com.schoolcompetition.model.dto.request.CarRequest.CreateCarRequest;
+import com.schoolcompetition.model.dto.request.CarRequest.UpdateCarRequest;
 import com.schoolcompetition.model.dto.response.CarResponse;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Car;
+import com.schoolcompetition.model.entity.Team;
 import com.schoolcompetition.repository.CarRepository;
+import com.schoolcompetition.repository.TeamRepository;
 import com.schoolcompetition.service.CarService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +25,8 @@ import java.util.Map;
 public class CarServiceImpl implements CarService {
     @Autowired
     CarRepository carRepository;
+    @Autowired
+    TeamRepository teamRepository;
     @Override
     public ResponseEntity<ResponseObj> getAllCar() {
         List<Car> carList = carRepository.findAll();
@@ -100,5 +107,118 @@ public class CarServiceImpl implements CarService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseObj> createCar(CreateCarRequest carRequest) {
+        try {
+            // Kiểm tra xem teamId trong request có tồn tại không
+            Team team = teamRepository.findById(carRequest.getTeamId()).orElse(null);
+            if (team == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Team not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            // Tạo xe mới
+            Car car = new Car();
+            car.setName(carRequest.getName());
+            car.setType(carRequest.getType());
+            car.setDescription(carRequest.getDescription());
+            car.setTeam(team);
+
+            // Lưu xe mới vào cơ sở dữ liệu
+            Car savedCar = carRepository.save(car);
+
+            // Chuyển đổi xe thành đối tượng response
+            CarResponse carResponse = CarMapper.toCarResponse(savedCar);
+
+            // Tạo và trả về response thành công
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Car created successfully")
+                    .data(carResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về response thất bại nếu có lỗi xảy ra
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to create car")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseObj> updateCar(int id, UpdateCarRequest carRequest) {
+        try {
+            // Tìm xe cần cập nhật trong cơ sở dữ liệu
+            Car car = carRepository.findById(id).orElse(null);
+            if (car == null) {
+                // Trả về response not found nếu không tìm thấy xe
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Car not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            // Cập nhật thông tin xe nếu các trường không null
+            if (carRequest.getName() != null) {
+                car.setName(carRequest.getName());
+            }
+            if (carRequest.getType() != null) {
+                car.setType(carRequest.getType());
+            }
+            if (carRequest.getDescription() != null) {
+                car.setDescription(carRequest.getDescription());
+            }
+            if (carRequest.getTeamId() != 0) {
+                Team team = teamRepository.findById(carRequest.getTeamId()).orElse(null);
+                if (team == null) {
+                    // Trả về response not found nếu không tìm thấy đội
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .status(String.valueOf(HttpStatus.NOT_FOUND))
+                            .message("Team not found")
+                            .data(null)
+                            .build();
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                }
+                car.setTeam(team);
+            }
+
+            // Lưu xe đã cập nhật vào cơ sở dữ liệu
+            Car updatedCar = carRepository.save(car);
+
+            // Chuyển đổi xe đã cập nhật thành đối tượng response
+            CarResponse carResponse = CarMapper.toCarResponse(updatedCar);
+
+            // Tạo và trả về response thành công
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Car updated successfully")
+                    .data(carResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về response thất bại nếu có lỗi xảy ra
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to update car")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
 
 }

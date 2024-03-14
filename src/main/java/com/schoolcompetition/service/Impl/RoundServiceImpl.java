@@ -2,13 +2,18 @@ package com.schoolcompetition.service.Impl;
 
 import com.schoolcompetition.mapper.ResultMapper;
 import com.schoolcompetition.mapper.RoundMapper;
+import com.schoolcompetition.model.dto.request.RoundRequest.CreateRoundRequest;
+import com.schoolcompetition.model.dto.request.RoundRequest.UpdateRoundRequest;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.dto.response.ResultResponse;
 import com.schoolcompetition.model.dto.response.RoundResponse;
+import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.model.entity.Result;
 import com.schoolcompetition.model.entity.Round;
+import com.schoolcompetition.repository.CompetitionRepository;
 import com.schoolcompetition.repository.RoundRepository;
 import com.schoolcompetition.service.RoundService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +28,8 @@ import java.util.Map;
 public class RoundServiceImpl implements RoundService {
     @Autowired
     RoundRepository roundRepository;
+    @Autowired
+    CompetitionRepository competitionRepository;
 
     @Override
     public ResponseEntity<ResponseObj> getAllRound() {
@@ -101,5 +108,100 @@ public class RoundServiceImpl implements RoundService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseObj> createRound(CreateRoundRequest roundRequest) {
+        try {
+            Competition competition = competitionRepository.findById(roundRequest.getCompetitionId()).orElse(null);
+            if (competition == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Competition not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            Round round = new Round();
+            round.setName(roundRequest.getName());
+            round.setMap(roundRequest.getMap());
+            round.setCompetition(competition);
+
+            Round savedRound = roundRepository.save(round);
+
+            RoundResponse roundResponse = RoundMapper.toRoundResponse(savedRound);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Round created successfully")
+                    .data(roundResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to create round")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseObj> updateRound(int id, UpdateRoundRequest roundRequest) {
+        try {
+            Round round = roundRepository.findById(id).orElse(null);
+            if (round == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Round not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            if (roundRequest.getName() != null) {
+                round.setName(roundRequest.getName());
+            }
+            if (roundRequest.getMap() != null) {
+                round.setMap(roundRequest.getMap());
+            }
+            if (roundRequest.getCompetitionId() != 0) {
+                Competition competition = competitionRepository.findById(roundRequest.getCompetitionId()).orElse(null);
+                if (competition == null) {
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .status(String.valueOf(HttpStatus.NOT_FOUND))
+                            .message("Competition not found")
+                            .data(null)
+                            .build();
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                }
+                round.setCompetition(competition);
+            }
+
+            Round updatedRound = roundRepository.save(round);
+
+            RoundResponse roundResponse = RoundMapper.toRoundResponse(updatedRound);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Round updated successfully")
+                    .data(roundResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to update round")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
 
 }
