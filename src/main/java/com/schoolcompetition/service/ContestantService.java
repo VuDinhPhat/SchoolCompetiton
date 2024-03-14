@@ -1,12 +1,16 @@
 package com.schoolcompetition.service;
 
+import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.model.entity.Contestant;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface ContestantService {
-    List<Contestant> getAll();
+    ResponseEntity<ResponseObj> getAll();
+
+    ResponseEntity<ResponseObj> getById(int id);
 }

@@ -50,4 +50,27 @@ public class CompetitionServiceImpl implements CompetitionService {
         return ResponseEntity.ok().body(responseObj);
 
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> getCompetitionById(int id) {
+        Competition competition = competitionRepository.getReferenceById(id);
+
+        if(competition != null) {
+            CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(competition);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Bracket founded")
+                    .data(competitionResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
 }

@@ -1,12 +1,14 @@
 package com.schoolcompetition.controller;
 
 import com.schoolcompetition.model.dto.response.ApiResponse;
+import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.School;
 import com.schoolcompetition.service.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,10 +20,12 @@ public class SchoolController {
     SchoolService schoolService;
 
     @GetMapping(value = {"getAll"})
-    public ResponseEntity<ApiResponse<List<School>>> getAllClass() {
-        ApiResponse apiResponse = new ApiResponse();
-        List<School> schools = schoolService.getAll();
-        apiResponse.ok(schools);
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ResponseObj> getAll() {
+        return schoolService.getAllSchools();
+    }
+
+    @GetMapping(value = {"getById"})
+    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+        return schoolService.getSchoolById(id);
     }
 }

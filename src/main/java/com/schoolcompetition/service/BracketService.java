@@ -6,6 +6,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface BracketService {
-    //List<Bracket> getAllBracket();
+
     ResponseEntity<ResponseObj> getAllBracket();
+
+    ResponseEntity<ResponseObj> getBracketById(int id);
+
+    ResponseEntity<ResponseObj> getByName(String name);
 }

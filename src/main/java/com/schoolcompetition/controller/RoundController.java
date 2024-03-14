@@ -1,12 +1,14 @@
 package com.schoolcompetition.controller;
 
 import com.schoolcompetition.model.dto.response.ApiResponse;
+import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Round;
 import com.schoolcompetition.service.RoundService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,10 +20,12 @@ public class RoundController {
     RoundService roundService;
 
     @GetMapping(value = {"getAll"})
-    public ResponseEntity<ApiResponse<List<Round>>> getAll() {
-        ApiResponse apiResponse = new ApiResponse();
-        List<Round> rounds = roundService.getAllRound();
-        apiResponse.ok(rounds);
-        return ResponseEntity.ok(apiResponse);
+    public ResponseEntity<ResponseObj> getAll() {
+        return roundService.getAllRound();
+    }
+
+    @GetMapping(value = {"getById"})
+    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+        return roundService.getRoundById(id);
     }
 }
