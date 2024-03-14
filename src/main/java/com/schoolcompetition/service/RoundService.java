@@ -13,4 +13,5 @@ public interface RoundService {
     ResponseEntity<ResponseObj> getAllRound();
 
     ResponseEntity<ResponseObj> getRoundById(int id);
+    ResponseEntity<ResponseObj> getRoundByName(String name);
 }

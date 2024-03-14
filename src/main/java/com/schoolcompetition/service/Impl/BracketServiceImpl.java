@@ -75,7 +75,7 @@ public class BracketServiceImpl implements BracketService {
         Map<String, Object> response = new HashMap<>();
 
         for (Bracket bracket : bracketList) {
-            if (bracket.getName().toLowerCase().contains(name)) {
+            if (bracket.getName().toLowerCase().contains(name.toLowerCase())) {
                 bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
             }
         }

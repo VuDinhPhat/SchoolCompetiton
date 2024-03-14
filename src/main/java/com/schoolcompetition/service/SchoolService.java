@@ -11,4 +11,5 @@ import java.util.List;
 public interface SchoolService {
     ResponseEntity<ResponseObj> getAllSchools();
     ResponseEntity<ResponseObj> getSchoolById(int id);
+    ResponseEntity<ResponseObj> getSchoolByName(String name);
 }

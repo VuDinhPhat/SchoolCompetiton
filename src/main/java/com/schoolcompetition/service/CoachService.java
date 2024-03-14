@@ -13,4 +13,5 @@ public interface CoachService {
     ResponseEntity<ResponseObj> getAllCoach();
 
     ResponseEntity<ResponseObj> getCoachById(int id);
+    ResponseEntity<ResponseObj> getCoachByName(String name);
 }

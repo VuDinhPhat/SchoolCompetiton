@@ -12,4 +12,5 @@ import java.util.List;
 public interface TeamService {
     ResponseEntity<ResponseObj> getAllTeam();
     ResponseEntity<ResponseObj> getTeamById(int id);
+    ResponseEntity<ResponseObj> getTeamByName(String name);
 }

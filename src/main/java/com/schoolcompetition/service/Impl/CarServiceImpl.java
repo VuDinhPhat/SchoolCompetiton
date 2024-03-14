@@ -69,4 +69,36 @@ public class CarServiceImpl implements CarService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> getCarByName(String name) {
+        List<Car> carList = carRepository.findAll();
+        List<CarResponse> carResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+
+        for (Car car : carList) {
+            if (car.getName().toLowerCase().contains(name.toLowerCase())) {
+                carResponses.add(CarMapper.toCarResponse(car));
+            }
+        }
+
+        response.put("Cars", carResponses);
+
+        if (!carResponses.isEmpty()) {
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("There are " + carResponses.size() + " record(s) matching")
+                    .data(response)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
+
 }

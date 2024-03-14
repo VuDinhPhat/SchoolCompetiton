@@ -73,4 +73,35 @@ public class CompetitionServiceImpl implements CompetitionService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> getCompetitionByName(String name) {
+        List<Competition> competitionList = competitionRepository.findAll();
+        List<CompetitionResponse> competitionResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+
+        for (Competition competition : competitionList) {
+            if (competition.getName().toLowerCase().contains(name.toLowerCase())) {
+                competitionResponses.add(CompetitionMapper.toCompetitionResponse(competition));
+            }
+        }
+        response.put("Competitions", competitionResponses);
+
+        if (!competitionResponses.isEmpty()) {
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("There are " + competitionResponses.size() + " record(s) matching")
+                    .data(response)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
+
 }

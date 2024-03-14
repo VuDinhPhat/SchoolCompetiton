@@ -28,4 +28,6 @@ public class TeamController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return teamService.getTeamById(id);
     }
+    @GetMapping(value = {"getByName"})
+    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return teamService.getTeamByName(name);}
 }

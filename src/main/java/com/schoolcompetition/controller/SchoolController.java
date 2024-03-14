@@ -28,4 +28,6 @@ public class SchoolController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return schoolService.getSchoolById(id);
     }
+    @GetMapping(value = {"getByName"})
+    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return schoolService.getSchoolByName(name);}
 }

@@ -15,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class TeamServiceImpl implements TeamService {
     @Autowired
@@ -69,4 +72,35 @@ public class TeamServiceImpl implements TeamService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> getTeamByName(String name) {
+        List<Team> teamList = teamRepository.findAll();
+        List<TeamResponse> teamResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+
+        for (Team team : teamList) {
+            if (team.getName().toLowerCase().contains(name.toLowerCase())) {
+                teamResponses.add(TeamMapper.toTeamResponse(team));
+            }
+        }
+        response.put("Teams", teamResponses);
+
+        if (!teamResponses.isEmpty()) {
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("There are " + teamResponses.size() + " record(s) matching")
+                    .data(response)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
+
 }

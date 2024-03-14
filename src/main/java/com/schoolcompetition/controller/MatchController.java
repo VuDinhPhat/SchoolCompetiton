@@ -28,4 +28,6 @@ public class MatchController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return matchService.getById(id);
     }
+    @GetMapping(value = {"getByName"})
+    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return matchService.getMatchByName(name);}
 }

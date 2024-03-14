@@ -11,4 +11,5 @@ import java.util.List;
 public interface StudentService {
     ResponseEntity<ResponseObj> getAllStudent();
     ResponseEntity<ResponseObj> getStudentById(int id);
+    ResponseEntity<ResponseObj> getStudentByName(String name);
 }

@@ -28,4 +28,6 @@ public class RoundController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return roundService.getRoundById(id);
     }
+    @GetMapping(value = {"getByName"})
+    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return roundService.getRoundByName(name);}
 }
