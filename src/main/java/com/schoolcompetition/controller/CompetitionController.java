@@ -28,4 +28,5 @@ public class CompetitionController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return competitionService.getCompetitionById(id);
     }
+
 }

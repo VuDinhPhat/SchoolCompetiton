@@ -72,4 +72,36 @@ public class CoachServiceImpl implements CoachService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> getCoachByName(String name) {
+        List<Coach> coachList = coachRepository.findAll();
+        List<CoachResponse> coachResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+
+        for (Coach coach : coachList) {
+            if (coach.getName().toLowerCase().contains(name.toLowerCase())) {
+
+                coachResponses.add(CoachMapper.toCoachResponse(coach));
+            }
+        }
+        response.put("Coaches", coachResponses);
+
+        if (!coachResponses.isEmpty()) {
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("There are " + coachResponses.size() + " record(s) matching")
+                    .data(response)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
+
 }

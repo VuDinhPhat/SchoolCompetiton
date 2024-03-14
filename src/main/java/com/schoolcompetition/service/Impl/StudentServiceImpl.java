@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -58,6 +60,36 @@ public class StudentServiceImpl implements StudentService {
                     .status(String.valueOf(HttpStatus.OK))
                     .message("Student founded")
                     .data(studentResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
+
+    @Override
+    public ResponseEntity<ResponseObj> getStudentByName(String name) {
+        List<Student> studentList = studentRepository.findAll();
+        List<StudentResponse> studentResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+
+        for (Student student : studentList) {
+            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+                studentResponses.add(StudentMapper.toStudentResponse(student));
+            }
+        }
+        response.put("Students", studentResponses);
+
+        if (!studentResponses.isEmpty()) {
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("There are " + studentResponses.size() + " record(s) matching")
+                    .data(response)
                     .build();
             return ResponseEntity.ok().body(responseObj);
         }

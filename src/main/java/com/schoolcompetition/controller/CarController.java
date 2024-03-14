@@ -28,4 +28,7 @@ public class CarController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return carService.getCarById(id);
     }
+    @GetMapping(value = {"getByName"})
+    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return carService.getCarByName(name);
+    }
 }

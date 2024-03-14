@@ -28,4 +28,6 @@ public class CoachController {
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return coachService.getCoachById(id);
     }
+    @GetMapping(value = {"getByName"})
+    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return coachService.getCoachByName(name);}
 }

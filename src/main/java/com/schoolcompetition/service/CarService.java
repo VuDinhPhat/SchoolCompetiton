@@ -13,4 +13,5 @@ public interface CarService {
     ResponseEntity<ResponseObj> getAllCar();
 
     ResponseEntity<ResponseObj> getCarById(int id);
+    ResponseEntity<ResponseObj> getCarByName(String name);
 }

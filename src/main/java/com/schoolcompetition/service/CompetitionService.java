@@ -12,4 +12,5 @@ public interface CompetitionService {
     ResponseEntity<ResponseObj> getAllCompetition();
 
     ResponseEntity<ResponseObj> getCompetitionById(int id);
+    ResponseEntity<ResponseObj> getCompetitionByName(String name);
 }

@@ -70,4 +70,35 @@ public class MatchServiceImpl implements MatchService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> getMatchByName(String name) {
+        List<Match> matchList = matchRepository.findAll();
+        List<MatchResponse> matchResponses = new ArrayList<>();
+        Map<String, Object> response = new HashMap<>();
+
+        for (Match match : matchList) {
+            if (match.getName().toLowerCase().contains(name.toLowerCase())) {
+                matchResponses.add(MatchMapper.toMatchResponse(match));
+            }
+        }
+        response.put("Matches", matchResponses);
+
+        if (!matchResponses.isEmpty()) {
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("There are " + matchResponses.size() + " record(s) matching")
+                    .data(response)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                .message("No record matching")
+                .data(null)
+                .build();
+        return ResponseEntity.badRequest().body(responseObj);
+    }
+
 }

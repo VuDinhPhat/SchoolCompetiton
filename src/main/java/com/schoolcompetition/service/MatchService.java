@@ -11,4 +11,5 @@ public interface MatchService {
     ResponseEntity<ResponseObj> getAll();
 
     ResponseEntity<ResponseObj> getById(int id);
+    ResponseEntity<ResponseObj> getMatchByName(String name);
 }
