@@ -1,6 +1,11 @@
 package com.schoolcompetition.controller;
 
 import com.schoolcompetition.model.dto.request.BracketRequest.CreateBracketRequest;
+
+import com.schoolcompetition.model.dto.request.BracketRequest.UpdateBracketRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.CreateTeamRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.UpdateTeamRequest;
+
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.service.BracketService;
 import com.schoolcompetition.util.ValidatorUtil;
@@ -35,6 +40,7 @@ public class BracketController {
         return bracketService.getByName(name);
     }
 
+
     @PostMapping(value = {"createBracket"})
     public ResponseEntity<ResponseObj> createBracket(@RequestBody @Valid CreateBracketRequest createBracketRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -47,5 +53,10 @@ public class BracketController {
             return ResponseEntity.badRequest().body(responseObj);
         }
         return bracketService.createBracket(createBracketRequest, bindingResult);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseObj> updateBracket(@PathVariable int id, @RequestBody UpdateBracketRequest bracketRequest) {
+        return bracketService.updateBracket(id, bracketRequest);
     }
 }

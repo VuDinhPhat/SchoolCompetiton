@@ -20,6 +20,6 @@ public class CreateBracketRequest {
     @Length(min = 10)
     String name;
 
-    @NotBlank
+    @NotNull
     int roundId;
 }

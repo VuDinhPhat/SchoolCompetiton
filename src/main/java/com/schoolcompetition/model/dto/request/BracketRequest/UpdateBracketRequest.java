@@ -8,5 +8,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateBracketRequest {
     String name;
-    String roundId;
+    int roundId;
 }

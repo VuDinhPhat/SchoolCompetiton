@@ -1,5 +1,9 @@
 package com.schoolcompetition.service;
 
+import com.schoolcompetition.model.dto.request.CompetitionRequest.CreateCompetitionRequest;
+import com.schoolcompetition.model.dto.request.CompetitionRequest.UpdateCompetitionRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.CreateTeamRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.UpdateTeamRequest;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Competition;
 import org.springframework.http.ResponseEntity;
@@ -12,4 +16,7 @@ public interface CompetitionService {
     ResponseEntity<ResponseObj> getAllCompetition();
 
     ResponseEntity<ResponseObj> getCompetitionById(int id);
+    ResponseEntity<ResponseObj> getCompetitionByName(String name);
+    ResponseEntity<ResponseObj> createCompetition(CreateCompetitionRequest competitionRequest);
+    ResponseEntity<ResponseObj> updateCompetition(int id, UpdateCompetitionRequest updateCompetitionRequest);
 }
