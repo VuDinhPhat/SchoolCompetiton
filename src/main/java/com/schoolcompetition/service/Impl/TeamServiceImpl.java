@@ -2,13 +2,21 @@ package com.schoolcompetition.service.Impl;
 
 import com.schoolcompetition.mapper.StudentMapper;
 import com.schoolcompetition.mapper.TeamMapper;
+import com.schoolcompetition.model.dto.request.TeamRequest.CreateTeamRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.UpdateTeamRequest;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.dto.response.StudentResponse;
 import com.schoolcompetition.model.dto.response.TeamResponse;
+import com.schoolcompetition.model.entity.Coach;
+import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.model.entity.Student;
 import com.schoolcompetition.model.entity.Team;
+import com.schoolcompetition.repository.CoachRepository;
+import com.schoolcompetition.repository.CompetitionRepository;
+import com.schoolcompetition.repository.SchoolRepository;
 import com.schoolcompetition.repository.TeamRepository;
 import com.schoolcompetition.service.TeamService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +31,10 @@ import java.util.Map;
 public class TeamServiceImpl implements TeamService {
     @Autowired
     TeamRepository teamRepository;
+    @Autowired
+    CoachRepository coachRepository;
+    @Autowired
+    CompetitionRepository competitionRepository;
 
 
     @Override
@@ -102,5 +114,120 @@ public class TeamServiceImpl implements TeamService {
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
     }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseObj> createTeam(CreateTeamRequest teamRequest) {
+        try {
+            Coach coach = coachRepository.findById(teamRequest.getCoachId()).orElse(null);
+            if (coach == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Coach not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            Competition competition = competitionRepository.findById(teamRequest.getCompetitionId()).orElse(null);
+            if (competition == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Competition not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            // Tạo đội mới
+            Team team = new Team();
+            team.setName(teamRequest.getName());
+            team.setCoach(coach);
+            team.setCompetition(competition);
+
+            Team savedTeam = teamRepository.save(team);
+
+            TeamResponse teamResponse = TeamMapper.toTeamResponse(savedTeam);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Team created successfully")
+                    .data(teamResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to create team")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseObj> updateTeam(int id, UpdateTeamRequest teamRequest) {
+        try {
+            Team team = teamRepository.findById(id).orElse(null);
+            if (team == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("Team not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            if (teamRequest.getName() != null) {
+                team.setName(teamRequest.getName());
+            }
+            if (teamRequest.getCoachId() != 0) {
+                Coach coach = coachRepository.findById(teamRequest.getCoachId()).orElse(null);
+                if (coach == null) {
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .status(String.valueOf(HttpStatus.NOT_FOUND))
+                            .message("Coach not found")
+                            .data(null)
+                            .build();
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                }
+                team.setCoach(coach);
+            }
+            if (teamRequest.getCompetitionId() != 0) {
+                Competition competition = competitionRepository.findById(teamRequest.getCompetitionId()).orElse(null);
+                if (competition == null) {
+                    ResponseObj responseObj = ResponseObj.builder()
+                            .status(String.valueOf(HttpStatus.NOT_FOUND))
+                            .message("Competition not found")
+                            .data(null)
+                            .build();
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+                }
+                team.setCompetition(competition);
+            }
+
+            Team updatedTeam = teamRepository.save(team);
+
+            TeamResponse teamResponse = TeamMapper.toTeamResponse(updatedTeam);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("Team updated successfully")
+                    .data(teamResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to update team")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
 
 }

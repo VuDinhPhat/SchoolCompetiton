@@ -15,7 +15,6 @@ public class CreateMatchRequest {
     String name;
 
     @NotNull
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     Date startTime;
 
     @NotBlank

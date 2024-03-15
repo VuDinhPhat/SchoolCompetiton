@@ -11,5 +11,5 @@ public class CreateBracketRequest {
     @NotNull
     String name;
     @NotNull
-    String roundId;
+    int roundId;
 }

@@ -1,6 +1,8 @@
 package com.schoolcompetition.service.Impl;
 
 import com.schoolcompetition.mapper.SchoolMapper;
+import com.schoolcompetition.model.dto.request.SchoolRequest.CreateSchoolRequest;
+import com.schoolcompetition.model.dto.request.SchoolRequest.UpdateSchoolRequest;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.dto.response.SchoolResponse;
 import com.schoolcompetition.model.entity.School;
@@ -99,4 +101,73 @@ public class SchoolServiceImpl implements SchoolService {
         return ResponseEntity.badRequest().body(responseObj);
     }
 
+    @Override
+    public ResponseEntity<ResponseObj> createSchool(CreateSchoolRequest requestSchool) {
+        try {
+            School newSchool = new School();
+            newSchool.setName(requestSchool.getName());
+            newSchool.setAddress(requestSchool.getAddress());
+
+            School savedSchool = schoolRepository.save(newSchool);
+
+            SchoolResponse schoolResponse = SchoolMapper.toSchoolResponse(savedSchool);
+
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status("OK")
+                    .message("School created successfully")
+                    .data(schoolResponse)
+                    .build();
+
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to create school")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
+
+    @Override
+    public ResponseEntity<ResponseObj> updateSchool(int id, UpdateSchoolRequest requestSchool) {
+        try {
+            School school = schoolRepository.findById(id).orElse(null);
+            if (school == null) {
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("School not found")
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+
+            if (requestSchool.getName() != null && !requestSchool.getName().isEmpty()) {
+                school.setName(requestSchool.getName());
+            }
+
+            if (requestSchool.getAddress() != null && !requestSchool.getAddress().isEmpty()) {
+                school.setAddress(requestSchool.getAddress());
+            }
+
+            School updatedSchool = schoolRepository.save(school);
+
+            SchoolResponse schoolResponse = SchoolMapper.toSchoolResponse(updatedSchool);
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.OK))
+                    .message("School updated successfully")
+                    .data(schoolResponse)
+                    .build();
+            return ResponseEntity.ok().body(responseObj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseObj responseObj = ResponseObj.builder()
+                    .status(String.valueOf(HttpStatus.BAD_REQUEST))
+                    .message("Failed to update school")
+                    .data(null)
+                    .build();
+            return ResponseEntity.badRequest().body(responseObj);
+        }
+    }
 }

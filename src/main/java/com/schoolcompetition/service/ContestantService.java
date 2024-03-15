@@ -1,5 +1,9 @@
 package com.schoolcompetition.service;
 
+import com.schoolcompetition.model.dto.request.ContestantRequest.CreateContestantRequest;
+import com.schoolcompetition.model.dto.request.ContestantRequest.UpdateContestantRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.CreateTeamRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.UpdateTeamRequest;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.model.entity.Competition;
 import com.schoolcompetition.model.entity.Contestant;
@@ -13,4 +17,6 @@ public interface ContestantService {
     ResponseEntity<ResponseObj> getAll();
 
     ResponseEntity<ResponseObj> getById(int id);
+    ResponseEntity<ResponseObj> createContestant(CreateContestantRequest contestantRequest);
+    ResponseEntity<ResponseObj> updateContestant(int id, UpdateContestantRequest contestantRequest);
 }
