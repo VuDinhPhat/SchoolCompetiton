@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public class ValidatorUtil {
 
-    public HashMap<String, String> toErrors(List<FieldError> fieldErrors) {
+    public static HashMap<String, String> toErrors(List<FieldError> fieldErrors) {
         HashMap<String, String> hashMap = new HashMap<>();
         if (fieldErrors != null) {
             for (FieldError fieldError : fieldErrors) {

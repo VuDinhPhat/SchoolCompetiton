@@ -51,15 +51,18 @@ public class CarServiceImpl implements CarService {
     @Override
     public ResponseEntity<ResponseObj> getCarById(int id) {
         Car car = carRepository.getReferenceById(id);
+        List<Car> carList = carRepository.findAll();
 
-        if (car != null) {
-            CarResponse carResponse = CarMapper.toCarResponse(car);
-            ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Car founded")
-                    .data(carResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+        for (Car c : carList) {
+            if (c.equals(car)) {
+                CarResponse carResponse = CarMapper.toCarResponse(car);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Car founded")
+                        .data(carResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
         }
 
         ResponseObj responseObj = ResponseObj.builder()

@@ -48,15 +48,18 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public ResponseEntity<ResponseObj> getResultById(int id) {
         Result result = resultRepository.findById(id).orElse(null);
+        List<Result> resultList = resultRepository.findAll();
 
-        if (result != null) {
-            ResultResponse resultResponse = ResultMapper.toResultResponse(result);
-            ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Result founded")
-                    .data(resultResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+        for (Result r : resultList) {
+            if (r.equals(result)) {
+                ResultResponse resultResponse = ResultMapper.toResultResponse(result);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Result founded")
+                        .data(resultResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
         }
 
         ResponseObj responseObj = ResponseObj.builder()

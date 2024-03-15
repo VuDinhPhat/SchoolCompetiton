@@ -54,16 +54,19 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Override
     public ResponseEntity<ResponseObj> getCompetitionById(int id) {
         Competition competition = competitionRepository.getReferenceById(id);
+        List<Competition> competitionList = competitionRepository.findAll();
 
-        if(competition != null) {
-            CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(competition);
+        for (Competition c : competitionList) {
+            if(c.equals(competition)) {
+                CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(competition);
 
-            ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Bracket founded")
-                    .data(competitionResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Bracket founded")
+                        .data(competitionResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
         }
 
         ResponseObj responseObj = ResponseObj.builder()

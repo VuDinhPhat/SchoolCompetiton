@@ -52,15 +52,18 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public ResponseEntity<ResponseObj> getById(int id) {
         Match match = matchRepository.getReferenceById(id);
+        List<Match> matchList = matchRepository.findAll();
 
-        if (match != null) {
-            MatchResponse matchResponse = MatchMapper.toMatchResponse(match);
-            ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Match founded")
-                    .data(matchResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+        for (Match m : matchList) {
+            if (m.equals(match)) {
+                MatchResponse matchResponse = MatchMapper.toMatchResponse(match);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Match founded")
+                        .data(matchResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
         }
 
         ResponseObj responseObj = ResponseObj.builder()

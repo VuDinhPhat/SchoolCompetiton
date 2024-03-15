@@ -55,16 +55,19 @@ public class ContestantServiceImpl implements ContestantService {
     @Override
     public ResponseEntity<ResponseObj> getById(int id) {
         Contestant contestant = contestantRepository.getReferenceById(id);
+        List<Contestant> contestantList = contestantRepository.findAll();
 
-        if (contestant != null) {
-            ContestantResponse contestantResponse = ContestantMapper.toContestantResponse(contestant);
+        for (Contestant c : contestantList) {
+            if (c.equals(contestant)) {
+                ContestantResponse contestantResponse = ContestantMapper.toContestantResponse(contestant);
 
-            ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Bracket founded")
-                    .data(contestantResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Bracket founded")
+                        .data(contestantResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
         }
 
         ResponseObj responseObj = ResponseObj.builder()

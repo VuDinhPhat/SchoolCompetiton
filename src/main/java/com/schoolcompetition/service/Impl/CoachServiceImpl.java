@@ -53,16 +53,19 @@ public class CoachServiceImpl implements CoachService {
     @Override
     public ResponseEntity<ResponseObj> getCoachById(int id) {
         Coach coach = coachRepository.getReferenceById(id);
+        List<Coach> coachList = coachRepository.findAll();
 
-        if (coach != null) {
-            CoachResponse coachResponse = CoachMapper.toCoachResponse(coach);
+        for (Coach c : coachList) {
+            if (c.equals(coach)) {
+                CoachResponse coachResponse = CoachMapper.toCoachResponse(coach);
 
-            ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Coach founded")
-                    .data(coachResponse)
-                    .build();
-            return ResponseEntity.ok().body(responseObj);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Coach founded")
+                        .data(coachResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
         }
 
         ResponseObj responseObj = ResponseObj.builder()
