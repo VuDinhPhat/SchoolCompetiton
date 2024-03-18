@@ -1,5 +1,7 @@
 package com.schoolcompetition.model.dto.request.StudentRequest;
 
+import com.schoolcompetition.enums.Gender;
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -13,6 +15,7 @@ import java.util.Date;
 public class UpdateStudentRequest {
     String name;
     Date dob;
-    Character sex;
+    Gender sex;
+    Status status;
     int schoolId;
 }

@@ -14,9 +14,11 @@ import java.util.List;
 
 @Service
 public interface TeamService {
-    ResponseEntity<ResponseObj> getAllTeam();
+    ResponseEntity<ResponseObj> getListTeams(int page, int size);
     ResponseEntity<ResponseObj> getTeamById(int id);
     ResponseEntity<ResponseObj> getTeamByName(String name);
     ResponseEntity<ResponseObj> createTeam(CreateTeamRequest teamRequest);
     ResponseEntity<ResponseObj> updateTeam(int id, UpdateTeamRequest teamRequest);
+    ResponseEntity<ResponseObj> deleteTeam(int id);
+
 }

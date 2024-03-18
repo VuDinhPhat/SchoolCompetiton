@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.BrackerMapper;
 import com.schoolcompetition.model.dto.request.BracketRequest.CreateBracketRequest;
 
@@ -21,6 +22,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 
@@ -33,31 +37,49 @@ public class BracketServiceImpl implements BracketService {
 
 
     @Override
-    public ResponseEntity<ResponseObj> getAllBracket() {
-        List<Bracket> bracketList = bracketRepository.findAll();
-        List<BracketResponse> bracketResponses = new ArrayList<>();
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ResponseObj> getListBrackets(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Bracket bracket : bracketList) {
-            bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
-        }
-        response.put("Bracket", bracketResponses);
+            // Truy vấn dữ liệu Bracket từ cơ sở dữ liệu sử dụng phân trang
+            Page<Bracket> bracketPage = bracketRepository.findAll(pageable);
 
-        if (!bracketResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (bracketPage.hasContent()) {
+                List<BracketResponse> bracketResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Bracket thành danh sách BracketResponse
+                for (Bracket bracket : bracketPage.getContent()) {
+                    bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách BracketResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Bracket successfully")
+                        .data(bracketResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Bracket successfully")
-                    .data(response)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Bracket data")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Bracket failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
 
     @Override
@@ -132,6 +154,7 @@ public class BracketServiceImpl implements BracketService {
         Bracket bracket = new Bracket();
         bracket.setName(createBracketRequest.getName());
         bracket.setRound(currentRound);
+        bracket.setStatus(createBracketRequest.getStatus());
         response.put("Bracket", bracket);
         bracketRepository.save(bracket);
 
@@ -148,10 +171,8 @@ public class BracketServiceImpl implements BracketService {
     @Transactional
     public ResponseEntity<ResponseObj> updateBracket(int id, UpdateBracketRequest bracketRequest) {
         try {
-            // Tìm bracket cần cập nhật trong cơ sở dữ liệu
             Bracket bracket = bracketRepository.findById(id).orElse(null);
             if (bracket == null) {
-                // Trả về response not found nếu không tìm thấy bracket
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("Bracket not found")
@@ -160,9 +181,11 @@ public class BracketServiceImpl implements BracketService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Cập nhật thông tin bracket nếu các trường không null
             if (bracketRequest.getName() != null) {
                 bracket.setName(bracketRequest.getName());
+            }
+            if (bracketRequest.getStatus() != null) {
+                bracket.setStatus(bracketRequest.getStatus());
             }
             if (bracketRequest.getRoundId() != 0) {
                 Round round = roundRepository.findById(bracketRequest.getRoundId()).orElse(null);
@@ -178,13 +201,10 @@ public class BracketServiceImpl implements BracketService {
                 bracket.setRound(round);
             }
 
-            // Lưu bracket đã cập nhật vào cơ sở dữ liệu
             Bracket updatedBracket = bracketRepository.save(bracket);
 
-            // Chuyển đổi bracket đã cập nhật thành đối tượng response
             BracketResponse bracketResponse = BrackerMapper.toBracketResponse(updatedBracket);
 
-            // Tạo và trả về response thành công
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
                     .message("Bracket updated successfully")
@@ -193,7 +213,6 @@ public class BracketServiceImpl implements BracketService {
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về response thất bại nếu có lỗi xảy ra
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.BAD_REQUEST))
                     .message("Failed to update bracket")
@@ -202,6 +221,35 @@ public class BracketServiceImpl implements BracketService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteBracket(int id) {
+        Bracket bracketToDelete = bracketRepository.getReferenceById(id);
+        List<Bracket> bracketList = bracketRepository.findAll();
+
+        for (Bracket bracket : bracketList) {
+            if (bracket.equals(bracketToDelete)) {
+                bracket.setStatus(Status.IN_ACTIVE);
+                bracketRepository.save(bracket);
+
+                BracketResponse bracketResponse = BrackerMapper.toBracketResponse(bracketToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Bracket status changed to INACTIVE")
+                        .data(bracketResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Bracket not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 
 }

@@ -1,5 +1,7 @@
 package com.schoolcompetition.model.dto.request.CarRequest;
 
+import com.schoolcompetition.enums.Status;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -14,4 +16,6 @@ public class UpdateCarRequest {
     String description;
 
     int teamId;
+
+    Status status;
 }

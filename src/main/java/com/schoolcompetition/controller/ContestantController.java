@@ -19,21 +19,26 @@ public class ContestantController {
     @Autowired
     ContestantService contestantService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return contestantService.getAll();
+    @GetMapping("getList")
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return contestantService.getListContestants(page, size);
     }
 
     @GetMapping(value = {"getById"})
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return contestantService.getById(id);
     }
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createContestant(@RequestBody CreateContestantRequest contestantRequest) {
         return contestantService.createContestant(contestantRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateContestant(@PathVariable int id, @RequestBody UpdateContestantRequest contestantRequest) {
         return contestantService.updateContestant(id, contestantRequest);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteContestant(@PathVariable int id) {
+        return contestantService.deleteContestant(id);
     }
 }

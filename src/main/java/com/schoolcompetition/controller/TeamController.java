@@ -20,9 +20,10 @@ public class TeamController {
     @Autowired
     TeamService teamService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return teamService.getAllTeam();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return teamService.getListTeams(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -31,12 +32,16 @@ public class TeamController {
     }
     @GetMapping(value = {"getByName"})
     public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return teamService.getTeamByName(name);}
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createTeam(@RequestBody CreateTeamRequest teamRequest) {
         return teamService.createTeam(teamRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateTeam(@PathVariable int id, @RequestBody UpdateTeamRequest updateTeam) {
         return teamService.updateTeam(id, updateTeam);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteTeam(@PathVariable int id) {
+        return teamService.deleteTeam(id);
     }
 }

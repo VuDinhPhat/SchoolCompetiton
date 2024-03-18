@@ -20,9 +20,10 @@ public class ResultController {
     @Autowired
     ResultService resultService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return resultService.getAllResult();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return resultService.getListResults(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -30,12 +31,16 @@ public class ResultController {
         return resultService.getResultById(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createResult(@RequestBody CreateResultRequest resultRequest) {
         return resultService.createResult(resultRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateResult(@PathVariable int id, @RequestBody UpdateResultRequest resultRequest) {
         return resultService.updateResult(id, resultRequest);
+    }
+    @PutMapping("/delete")
+    public ResponseEntity<ResponseObj> deleteResult(@PathVariable int id) {
+        return resultService.deleteResult(id);
     }
 }

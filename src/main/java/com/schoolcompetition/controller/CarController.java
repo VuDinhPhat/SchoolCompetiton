@@ -20,10 +20,12 @@ public class CarController {
     @Autowired
     CarService carService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return carService.getAllCar();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return carService.getListCars(page, size);
     }
+
 
     @GetMapping(value = {"getById"})
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
@@ -32,12 +34,16 @@ public class CarController {
     @GetMapping(value = {"getByName"})
     public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return carService.getCarByName(name);
     }
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createCar(@RequestBody CreateCarRequest carRequest) {
         return carService.createCar(carRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateCar(@PathVariable int id, @RequestBody UpdateCarRequest carRequest) {
         return carService.updateCar(id, carRequest);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
+        return carService.deleteCar(id);
     }
 }

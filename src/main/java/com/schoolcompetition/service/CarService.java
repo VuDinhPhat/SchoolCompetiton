@@ -14,10 +14,12 @@ import java.util.List;
 
 @Service
 public interface CarService {
-    ResponseEntity<ResponseObj> getAllCar();
+    ResponseEntity<ResponseObj> getListCars(int page, int size);
 
     ResponseEntity<ResponseObj> getCarById(int id);
     ResponseEntity<ResponseObj> getCarByName(String name);
     ResponseEntity<ResponseObj> createCar(CreateCarRequest carRequest);
     ResponseEntity<ResponseObj> updateCar(int id, UpdateCarRequest carRequest);
+    ResponseEntity<ResponseObj> deleteCar(int id);
+
 }

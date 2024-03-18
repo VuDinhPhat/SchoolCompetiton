@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.request.CompetitionRequest;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.SchoolYear;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +22,7 @@ public class CreateCompetitionRequest {
 
     @NotNull
     int schoolYearId;
+
+    @NotNull
+    Status status;
 }

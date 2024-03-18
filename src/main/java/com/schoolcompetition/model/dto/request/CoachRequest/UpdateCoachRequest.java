@@ -1,5 +1,7 @@
 package com.schoolcompetition.model.dto.request.CoachRequest;
 
+import com.schoolcompetition.enums.Gender;
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -15,7 +17,9 @@ public class UpdateCoachRequest {
 
     Date dob;
 
-    char sex;
+    Gender sex;
+
+    Status status;
 
     int schoolId;
 }

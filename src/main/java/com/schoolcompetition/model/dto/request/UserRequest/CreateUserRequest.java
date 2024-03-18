@@ -1,4 +1,4 @@
-package com.schoolcompetition.model.dto.request.SchoolRequest;
+package com.schoolcompetition.model.dto.request.UserRequest;
 
 import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
@@ -8,8 +8,17 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateSchoolRequest {
+public class CreateUserRequest {
+    @NotBlank
+    String email;
+
+    @NotBlank
+    String password;
+
+    @NotBlank
     String name;
-    String address;
+
+    String phone;
+
     Status status;
 }

@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.BrackerMapper;
 import com.schoolcompetition.mapper.ContestantMapper;
 import com.schoolcompetition.model.dto.request.ContestantRequest.CreateContestantRequest;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,33 +39,51 @@ public class ContestantServiceImpl implements ContestantService {
     @Autowired
     TeamRepository teamRepository;
     @Override
-    public ResponseEntity<ResponseObj> getAll() {
-        List<Contestant> contestantList = contestantRepository.findAll();
-        List<ContestantResponse> contestantResponses = new ArrayList<>();
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ResponseObj> getListContestants(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Contestant contestant : contestantList) {
-            contestantResponses.add(ContestantMapper.toContestantResponse(contestant));
-        }
-        response.put("Contestant", contestantResponses);
+            // Truy vấn dữ liệu Contestant từ cơ sở dữ liệu sử dụng phân trang
+            Page<Contestant> contestantPage = contestantRepository.findAll(pageable);
 
-        if (!contestantResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (contestantPage.hasContent()) {
+                List<ContestantResponse> contestantResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Contestant thành danh sách ContestantResponse
+                for (Contestant contestant : contestantPage.getContent()) {
+                    contestantResponses.add(ContestantMapper.toContestantResponse(contestant));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách ContestantResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Contestant successfully")
+                        .data(contestantResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Contestant successfully")
-                    .data(response)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Contestant data")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Contestant failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
-
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getById(int id) {
@@ -93,7 +115,6 @@ public class ContestantServiceImpl implements ContestantService {
     @Transactional
     public ResponseEntity<ResponseObj> createContestant(CreateContestantRequest contestantRequest) {
         try {
-            // Kiểm tra xem studentId, coachId và teamId trong request có tồn tại không
             Student student = studentRepository.findById(contestantRequest.getStudentId()).orElse(null);
             if (student == null) {
                 ResponseObj responseObj = ResponseObj.builder()
@@ -124,19 +145,16 @@ public class ContestantServiceImpl implements ContestantService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Tạo thí sinh mới
             Contestant contestant = new Contestant();
             contestant.setStudent(student);
             contestant.setCoach(coach);
             contestant.setTeam(team);
+            contestant.setStatus(contestantRequest.getStatus());
 
-            // Lưu thí sinh mới vào cơ sở dữ liệu
             Contestant savedContestant = contestantRepository.save(contestant);
 
-            // Chuyển đổi thí sinh thành đối tượng response
             ContestantResponse contestantResponse = ContestantMapper.toContestantResponse(savedContestant);
 
-            // Tạo và trả về response thành công
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
                     .message("Contestant created successfully")
@@ -145,7 +163,6 @@ public class ContestantServiceImpl implements ContestantService {
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về response thất bại nếu có lỗi xảy ra
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.BAD_REQUEST))
                     .message("Failed to create contestant")
@@ -159,10 +176,8 @@ public class ContestantServiceImpl implements ContestantService {
     @Transactional
     public ResponseEntity<ResponseObj> updateContestant(int id, UpdateContestantRequest contestantRequest) {
         try {
-            // Tìm thí sinh cần cập nhật trong cơ sở dữ liệu
             Contestant contestant = contestantRepository.findById(id).orElse(null);
             if (contestant == null) {
-                // Trả về response not found nếu không tìm thấy thí sinh
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("Contestant not found")
@@ -171,11 +186,9 @@ public class ContestantServiceImpl implements ContestantService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Cập nhật thông tin thí sinh nếu các trường không null
             if (contestantRequest.getStudentId() != 0) {
                 Student student = studentRepository.findById(contestantRequest.getStudentId()).orElse(null);
                 if (student == null) {
-                    // Trả về response not found nếu không tìm thấy sinh viên
                     ResponseObj responseObj = ResponseObj.builder()
                             .status(String.valueOf(HttpStatus.NOT_FOUND))
                             .message("Student not found")
@@ -211,6 +224,9 @@ public class ContestantServiceImpl implements ContestantService {
                 }
                 contestant.setTeam(team);
             }
+            if (contestantRequest.getStatus() != null) {
+                contestant.setStatus(contestantRequest.getStatus());
+            }
 
             // Lưu thí sinh đã cập nhật vào cơ sở dữ liệu
             Contestant updatedContestant = contestantRepository.save(contestant);
@@ -236,5 +252,35 @@ public class ContestantServiceImpl implements ContestantService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteContestant(int id) {
+        Contestant contestantToDelete = contestantRepository.getReferenceById(id);
+        List<Contestant> contestantList = contestantRepository.findAll();
+
+        for (Contestant contestant : contestantList) {
+            if (contestant.equals(contestantToDelete)) {
+                contestant.setStatus(Status.IN_ACTIVE); // Chuyển trạng thái thành INACTIVE
+                contestantRepository.save(contestant); // Lưu lại thay đổi vào cơ sở dữ liệu
+
+                ContestantResponse contestantResponse = ContestantMapper.toContestantResponse(contestantToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Contestant status changed to INACTIVE")
+                        .data(contestantResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        // Nếu không tìm thấy contestant
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Contestant not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 }

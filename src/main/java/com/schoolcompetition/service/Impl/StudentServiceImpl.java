@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.SchoolYearMapper;
 import com.schoolcompetition.mapper.StudentMapper;
 import com.schoolcompetition.model.dto.request.StudentRequest.CreateStudentRequest;
@@ -23,6 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -32,30 +37,51 @@ public class StudentServiceImpl implements StudentService {
     SchoolRepository schoolRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> getAllStudent() {
-        List<Student> studentList = studentRepository.findAll();
-        List<StudentResponse> studentsResponses = new ArrayList<>();
+    public ResponseEntity<ResponseObj> getListStudents(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Student students : studentList) {
-            studentsResponses.add(StudentMapper.toStudentResponse(students));
-        }
+            // Truy vấn dữ liệu Student từ cơ sở dữ liệu sử dụng phân trang
+            Page<Student> studentPage = studentRepository.findAll(pageable);
 
-        if (!studentsResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (studentPage.hasContent()) {
+                List<StudentResponse> studentResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Student thành danh sách StudentResponse
+                for (Student student : studentPage.getContent()) {
+                    studentResponses.add(StudentMapper.toStudentResponse(student));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách StudentResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Students successfully")
+                        .data(studentResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Student successfully")
-                    .data(studentsResponses)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Students")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Schools failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getStudentById(int id) {
@@ -127,6 +153,7 @@ public class StudentServiceImpl implements StudentService {
             student.setName(studentRequest.getName());
             student.setDob(studentRequest.getDob());
             student.setSex(studentRequest.getSex());
+            student.setStatus(studentRequest.getStatus());
             student.setSchool(school);
 
             Student savedStudent = studentRepository.save(student);
@@ -173,6 +200,10 @@ public class StudentServiceImpl implements StudentService {
             if (studentRequest.getSex() != null) {
                 student.setSex(studentRequest.getSex());
             }
+            if (studentRequest.getStatus() != null) {
+                student.setStatus(studentRequest.getStatus());
+            }
+
             if (studentRequest.getSchoolId() != 0) {
                 School school = schoolRepository.findById(studentRequest.getSchoolId()).orElse(null);
                 if (school == null) {
@@ -206,5 +237,34 @@ public class StudentServiceImpl implements StudentService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteStudent(int id) {
+        Student studentToDelete = studentRepository.getReferenceById(id);
+        List<Student> studentList = studentRepository.findAll();
+
+        for (Student student : studentList) {
+            if (student.equals(studentToDelete)) {
+                student.setStatus(Status.IN_ACTIVE);
+                studentRepository.save(student);
+
+                StudentResponse studentResponse = StudentMapper.toStudentResponse(studentToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Student status changed to INACTIVE")
+                        .data(studentResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Student not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 }

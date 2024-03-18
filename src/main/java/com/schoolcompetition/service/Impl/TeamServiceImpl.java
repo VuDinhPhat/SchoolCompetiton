@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.StudentMapper;
 import com.schoolcompetition.mapper.TeamMapper;
 import com.schoolcompetition.model.dto.request.TeamRequest.CreateTeamRequest;
@@ -26,6 +27,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class TeamServiceImpl implements TeamService {
@@ -38,30 +42,51 @@ public class TeamServiceImpl implements TeamService {
 
 
     @Override
-    public ResponseEntity<ResponseObj> getAllTeam() {
-        List<Team> teamList = teamRepository.findAll();
-        List<TeamResponse> teamResponses = new ArrayList<>();
+    public ResponseEntity<ResponseObj> getListTeams(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Team team : teamList) {
-            teamResponses.add(TeamMapper.toTeamResponse(team));
-        }
+            // Truy vấn dữ liệu Team từ cơ sở dữ liệu sử dụng phân trang
+            Page<Team> teamPage = teamRepository.findAll(pageable);
 
-        if (!teamResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (teamPage.hasContent()) {
+                List<TeamResponse> teamResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Team thành danh sách TeamResponse
+                for (Team team : teamPage.getContent()) {
+                    teamResponses.add(TeamMapper.toTeamResponse(team));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách TeamResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Teams successfully")
+                        .data(teamResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Team successfully")
-                    .data(teamResponses)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Teams")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Team failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getTeamById(int id) {
@@ -139,11 +164,11 @@ public class TeamServiceImpl implements TeamService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Tạo đội mới
             Team team = new Team();
             team.setName(teamRequest.getName());
             team.setCoach(coach);
             team.setCompetition(competition);
+            team.setStatus(teamRequest.getStatus());
 
             Team savedTeam = teamRepository.save(team);
 
@@ -182,6 +207,9 @@ public class TeamServiceImpl implements TeamService {
 
             if (teamRequest.getName() != null) {
                 team.setName(teamRequest.getName());
+            }
+            if (teamRequest.getStatus() != null) {
+                team.setStatus(teamRequest.getStatus());
             }
             if (teamRequest.getCoachId() != 0) {
                 Coach coach = coachRepository.findById(teamRequest.getCoachId()).orElse(null);
@@ -228,6 +256,35 @@ public class TeamServiceImpl implements TeamService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteTeam(int id) {
+        Team teamToDelete = teamRepository.getReferenceById(id);
+        List<Team> teamList = teamRepository.findAll();
+
+        for (Team team : teamList) {
+            if (team.equals(teamToDelete)) {
+                team.setStatus(Status.IN_ACTIVE);
+                teamRepository.save(team);
+
+                TeamResponse teamResponse = TeamMapper.toTeamResponse(teamToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Team status changed to INACTIVE")
+                        .data(teamResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Team not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 
 }

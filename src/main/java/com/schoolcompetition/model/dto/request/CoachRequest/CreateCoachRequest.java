@@ -1,4 +1,6 @@
 package com.schoolcompetition.model.dto.request.CoachRequest;
+import com.schoolcompetition.enums.Gender;
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.School;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,8 +18,11 @@ public class CreateCoachRequest {
     @NotNull
     Date dob;
 
-    @NotBlank
-    char sex;
+    @NotNull
+    Gender sex;
+
+    @NotNull
+    Status status;
 
     @NotNull
     int schoolId;

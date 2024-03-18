@@ -10,7 +10,7 @@ import org.springframework.validation.BindingResult;
 @Service
 public interface BracketService {
 
-    ResponseEntity<ResponseObj> getAllBracket();
+    ResponseEntity<ResponseObj> getListBrackets(int page, int size);
 
     ResponseEntity<ResponseObj> getBracketById(int id);
 
@@ -20,5 +20,7 @@ public interface BracketService {
     ResponseEntity<ResponseObj> createBracket(CreateBracketRequest createBracketRequest, BindingResult bindingResult);
 
     ResponseEntity<ResponseObj> updateBracket(int id, UpdateBracketRequest bracketRequest);
+    ResponseEntity<ResponseObj> deleteBracket(int id);
+
 
 }

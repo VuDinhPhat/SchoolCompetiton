@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.ResultMapper;
 import com.schoolcompetition.mapper.RoundMapper;
 import com.schoolcompetition.model.dto.request.RoundRequest.CreateRoundRequest;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.util.Map;import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,30 +36,51 @@ public class RoundServiceImpl implements RoundService {
     CompetitionRepository competitionRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> getAllRound() {
-        List<Round> roundList = roundRepository.findAll();
-        List<RoundResponse> roundResponses = new ArrayList<>();
+    public ResponseEntity<ResponseObj> getListRounds(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Round round : roundList) {
-            roundResponses.add(RoundMapper.toRoundResponse(round));
-        }
+            // Truy vấn dữ liệu Round từ cơ sở dữ liệu sử dụng phân trang
+            Page<Round> roundPage = roundRepository.findAll(pageable);
 
-        if (!roundResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (roundPage.hasContent()) {
+                List<RoundResponse> roundResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Round thành danh sách RoundResponse
+                for (Round round : roundPage.getContent()) {
+                    roundResponses.add(RoundMapper.toRoundResponse(round));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách RoundResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Rounds successfully")
+                        .data(roundResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Round successfully")
-                    .data(roundResponses)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Rounds")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Round failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getRoundById(int id) {
@@ -127,6 +152,7 @@ public class RoundServiceImpl implements RoundService {
             round.setName(roundRequest.getName());
             round.setMap(roundRequest.getMap());
             round.setCompetition(competition);
+            round.setStatus(roundRequest.getStatus());
 
             Round savedRound = roundRepository.save(round);
 
@@ -169,6 +195,9 @@ public class RoundServiceImpl implements RoundService {
             if (roundRequest.getMap() != null) {
                 round.setMap(roundRequest.getMap());
             }
+            if (roundRequest.getStatus() != null) {
+                round.setStatus(roundRequest.getStatus());
+            }
             if (roundRequest.getCompetitionId() != 0) {
                 Competition competition = competitionRepository.findById(roundRequest.getCompetitionId()).orElse(null);
                 if (competition == null) {
@@ -202,6 +231,36 @@ public class RoundServiceImpl implements RoundService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteRound(int id) {
+        Round roundToDelete = roundRepository.getReferenceById(id);
+        List<Round> roundList = roundRepository.findAll();
+
+        for (Round round : roundList) {
+            if (round.equals(roundToDelete)) {
+                round.setStatus(Status.IN_ACTIVE);
+                roundRepository.save(round);
+
+                RoundResponse roundResponse = RoundMapper.toRoundResponse(roundToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Round status changed to INACTIVE")
+                        .data(roundResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Round not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 
 }

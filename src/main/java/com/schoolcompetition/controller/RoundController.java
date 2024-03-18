@@ -20,9 +20,10 @@ public class RoundController {
     @Autowired
     RoundService roundService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return roundService.getAllRound();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return roundService.getListRounds(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -31,12 +32,16 @@ public class RoundController {
     }
     @GetMapping(value = {"getByName"})
     public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return roundService.getRoundByName(name);}
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createRound(@RequestBody CreateRoundRequest roundRequest) {
         return roundService.createRound(roundRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateRound(@PathVariable int id, @RequestBody UpdateRoundRequest updateRoundRequest) {
         return roundService.updateRound(id, updateRoundRequest);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteRound(@PathVariable int id) {
+        return roundService.deleteRound(id);
     }
 }
