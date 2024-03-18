@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.response;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.Coach;
 import com.schoolcompetition.model.entity.Student;
 import com.schoolcompetition.model.entity.Team;
@@ -18,4 +19,5 @@ public class ContestantResponse {
     Student student;
     Coach coach;
     Team team;
+    Status status;
 }

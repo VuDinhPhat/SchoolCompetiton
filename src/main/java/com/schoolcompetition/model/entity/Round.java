@@ -1,6 +1,7 @@
 package com.schoolcompetition.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.schoolcompetition.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,4 +30,8 @@ public class Round {
     @ManyToOne
     @JoinColumn(name = "competition_id")
     private Competition competition;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 }

@@ -1,6 +1,8 @@
 package com.schoolcompetition.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.schoolcompetition.enums.Gender;
+import com.schoolcompetition.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +25,9 @@ public class Coach {
     @Column(name = "dob")
     private Date dob;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sex")
-    private char sex;
+    private Gender sex;
 
     @ManyToOne
     @JoinColumn(name = "school_id")
@@ -37,4 +40,8 @@ public class Coach {
     @OneToMany(mappedBy = "coach")
     @JsonIgnore
     private List<Contestant> contestants;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 }

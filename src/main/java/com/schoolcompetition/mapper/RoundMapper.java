@@ -10,6 +10,7 @@ public class RoundMapper {
                 .name(round.getName())
                 .map(round.getMap())
                 .competition(round.getCompetition())
+                .status(round.getStatus())
                 .build();
     }
 }

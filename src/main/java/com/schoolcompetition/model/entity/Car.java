@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.schoolcompetition.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,8 @@ public class Car {
 
     @OneToOne(mappedBy = "car")
     private Result result;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 }

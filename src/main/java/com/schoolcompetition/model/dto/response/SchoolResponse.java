@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.response;
 
+import com.schoolcompetition.enums.Status;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,5 +15,5 @@ public class SchoolResponse {
     int id;
     String name;
     String address;
-
+    Status status;
 }

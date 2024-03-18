@@ -1,6 +1,7 @@
 package com.schoolcompetition.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.schoolcompetition.enums.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
@@ -38,5 +39,9 @@ public class Competition {
     @ManyToOne
     @JoinColumn(name = "school_year_id")
     private SchoolYear schoolYear;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
 }

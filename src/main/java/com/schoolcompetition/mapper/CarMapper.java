@@ -13,6 +13,7 @@ public class CarMapper {
                 .type(car.getType())
                 .description(car.getDescription())
                 .team(car.getTeam())
+                .status(car.getStatus())
                 .build();
     }
 }

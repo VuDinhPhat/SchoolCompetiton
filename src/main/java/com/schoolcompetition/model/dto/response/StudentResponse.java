@@ -1,5 +1,7 @@
 package com.schoolcompetition.model.dto.response;
 
+import com.schoolcompetition.enums.Gender;
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.School;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,6 +19,7 @@ public class StudentResponse {
     int id;
     String name;
     Date dob;
-    char sex;
+    Gender sex;
     School school;
+    Status status;
 }

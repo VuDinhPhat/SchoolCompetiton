@@ -8,6 +8,7 @@ public class ContestantMapper {
                 .student(contestant.getStudent())
                 .coach(contestant.getCoach())
                 .team(contestant.getTeam())
+                .status(contestant.getStatus())
                 .build();
     }
 }

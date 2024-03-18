@@ -42,7 +42,7 @@ public class BracketController {
 
 
     @PostMapping(value = {"createBracket"})
-    public ResponseEntity<ResponseObj> createBracket(@RequestBody @Valid CreateBracketRequest createBracketRequest, BindingResult bindingResult) {
+    public ResponseEntity<ResponseObj> createBracket(@Valid @RequestBody CreateBracketRequest createBracketRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             HashMap<String, String> errors = ValidatorUtil.toErrors(bindingResult.getFieldErrors());
             ResponseObj responseObj = ResponseObj.builder()

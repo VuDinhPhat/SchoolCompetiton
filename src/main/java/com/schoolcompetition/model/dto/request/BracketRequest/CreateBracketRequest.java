@@ -16,8 +16,7 @@ import org.hibernate.validator.constraints.Length;
 public class CreateBracketRequest {
 
     @NotNull(message = "Name must not be blank")
-    //@Pattern(regexp = "^[A-Za-z ]+$", message = "Names must not include numbers")
-    @Length(min = 10)
+    @Pattern(regexp = "^[A-Za-z ]+$", message = "Names must not include numbers")
     String name;
 
     @NotNull

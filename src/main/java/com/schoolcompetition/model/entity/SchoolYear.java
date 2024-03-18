@@ -1,6 +1,7 @@
 package com.schoolcompetition.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.schoolcompetition.enums.Status;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -23,4 +24,8 @@ public class SchoolYear {
     @OneToMany(mappedBy = "schoolYear")
     @JsonIgnore
     private List<Competition> competitions;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 }

@@ -9,6 +9,7 @@ public class BrackerMapper {
                 .id(bracket.getId())
                 .name(bracket.getName())
                 .round(bracket.getRound())
+                .status(bracket.getStatus())
                 .build();
     }
 }

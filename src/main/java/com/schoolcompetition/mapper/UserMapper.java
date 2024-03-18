@@ -11,7 +11,7 @@ public class UserMapper {
                 .password(user.getPassword())
                 .name(user.getName())
                 .phone(user.getPhone())
-                .status(user.isStatus())
+                .status(user.getStatus())
                 .build();
     }
 }

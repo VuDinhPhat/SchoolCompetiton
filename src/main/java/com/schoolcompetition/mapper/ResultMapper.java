@@ -11,6 +11,7 @@ public class ResultMapper {
                 .finishTime(result.getFinishTime())
                 .contestant(result.getContestant())
                 .match(result.getMatch())
+                .status(result.getStatus())
                 .build();
     }
 }

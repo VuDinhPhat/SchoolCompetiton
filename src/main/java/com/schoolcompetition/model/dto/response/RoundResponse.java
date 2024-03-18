@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.response;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.Competition;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,4 +16,5 @@ public class RoundResponse {
     String name;
     String map;
     Competition competition;
+    Status status;
 }

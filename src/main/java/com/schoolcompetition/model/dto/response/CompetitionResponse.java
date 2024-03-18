@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.response;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.SchoolYear;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,4 +18,5 @@ public class CompetitionResponse {
     String description;
     String holdPlace;
     SchoolYear schoolYear;
+    Status status;
 }

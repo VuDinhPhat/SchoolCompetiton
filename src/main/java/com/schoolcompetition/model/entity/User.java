@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.entity;
 
+import com.schoolcompetition.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +27,8 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    boolean status;
+    private Status status;
 }
 

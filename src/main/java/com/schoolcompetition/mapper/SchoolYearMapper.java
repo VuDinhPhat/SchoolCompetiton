@@ -8,6 +8,7 @@ public class SchoolYearMapper {
         return SchoolYearResponse.builder()
                 .id(schoolYear.getId())
                 .year(schoolYear.getYear())
+                .status(schoolYear.getStatus())
                 .build();
     }
 }

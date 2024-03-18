@@ -9,6 +9,7 @@ public class SchoolMapper {
                 .id(school.getId())
                 .name(school.getName())
                 .address(school.getAddress())
+                .status(school.getStatus())
                 .build();
     }
 }

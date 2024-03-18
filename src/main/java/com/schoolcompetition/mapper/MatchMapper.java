@@ -12,6 +12,7 @@ public class MatchMapper {
                 .place(match.getPlace())
                 .lap(match.getLap())
                 .bracket(match.getBracket())
+                .status(match.getStatus())
                 .build();
     }
 }

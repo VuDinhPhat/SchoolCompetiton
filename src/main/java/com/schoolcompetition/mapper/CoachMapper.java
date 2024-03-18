@@ -11,6 +11,7 @@ public class CoachMapper {
                 .dob(coach.getDob())
                 .sex(coach.getSex())
                 .school(coach.getSchool())
+                .status(coach.getStatus())
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.response;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.Bracket;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,4 +21,5 @@ public class MatchResponse {
     String place;
     int lap;
     Bracket bracket;
+    Status status;
 }
