@@ -10,6 +10,7 @@ public class TeamMapper {
                 .name(team.getName())
                 .coach(team.getCoach())
                 .competition(team.getCompetition())
+                .status(team.getStatus())
                 .build();
     }
 }

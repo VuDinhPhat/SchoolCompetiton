@@ -11,6 +11,7 @@ public class CompetitionMapper {
                 .description(competition.getDescription())
                 .holdPlace(competition.getHoldPlace())
                 .schoolYear(competition.getSchoolYear())
+                .status(competition.getStatus())
                 .build();
     }
 }

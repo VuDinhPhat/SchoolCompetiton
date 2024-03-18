@@ -11,6 +11,7 @@ public class StudentMapper {
                 .dob(student.getDob())
                 .sex(student.getSex())
                 .school(student.getSchool())
+                .status(student.getStatus())
                 .build();
     }
 }
