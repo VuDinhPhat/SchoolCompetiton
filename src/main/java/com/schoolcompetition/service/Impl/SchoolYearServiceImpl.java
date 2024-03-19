@@ -34,22 +34,18 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
     @Override
     public ResponseEntity<ResponseObj> getListSchoolsYear(int page, int size) {
         try {
-            // Tạo đối tượng Pageable để xác định trang và kích thước trang
             Pageable pageable = PageRequest.of(page, size);
 
-            // Truy vấn dữ liệu SchoolYear từ cơ sở dữ liệu sử dụng phân trang
             Page<SchoolYear> schoolYearPage = schoolYearRepository.findAll(pageable);
 
             // Kiểm tra xem trang có dữ liệu không
             if (schoolYearPage.hasContent()) {
                 List<SchoolYearResponse> schoolYearResponses = new ArrayList<>();
 
-                // Chuyển đổi danh sách SchoolYear thành danh sách SchoolYearResponse
                 for (SchoolYear schoolYear : schoolYearPage.getContent()) {
                     schoolYearResponses.add(SchoolYearMapper.toSchoolYearResponse(schoolYear));
                 }
 
-                // Tạo đối tượng ResponseObj chứa danh sách SchoolYearResponse
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
                         .message("Load all SchoolYears successfully")
@@ -57,7 +53,6 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             } else {
-                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("No data found on page " + page)
@@ -67,7 +62,6 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                     .message("Failed to load SchoolYears")

@@ -38,22 +38,17 @@ public class RoundServiceImpl implements RoundService {
     @Override
     public ResponseEntity<ResponseObj> getListRounds(int page, int size) {
         try {
-            // Tạo đối tượng Pageable để xác định trang và kích thước trang
             Pageable pageable = PageRequest.of(page, size);
 
-            // Truy vấn dữ liệu Round từ cơ sở dữ liệu sử dụng phân trang
             Page<Round> roundPage = roundRepository.findAll(pageable);
 
-            // Kiểm tra xem trang có dữ liệu không
             if (roundPage.hasContent()) {
                 List<RoundResponse> roundResponses = new ArrayList<>();
 
-                // Chuyển đổi danh sách Round thành danh sách RoundResponse
                 for (Round round : roundPage.getContent()) {
                     roundResponses.add(RoundMapper.toRoundResponse(round));
                 }
 
-                // Tạo đối tượng ResponseObj chứa danh sách RoundResponse
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
                         .message("Load all Rounds successfully")
@@ -61,7 +56,6 @@ public class RoundServiceImpl implements RoundService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             } else {
-                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("No data found on page " + page)
@@ -71,7 +65,6 @@ public class RoundServiceImpl implements RoundService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                     .message("Failed to load Rounds")

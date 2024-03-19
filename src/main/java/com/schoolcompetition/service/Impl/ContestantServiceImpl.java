@@ -41,22 +41,17 @@ public class ContestantServiceImpl implements ContestantService {
     @Override
     public ResponseEntity<ResponseObj> getListContestants(int page, int size) {
         try {
-            // Tạo đối tượng Pageable để xác định trang và kích thước trang
             Pageable pageable = PageRequest.of(page, size);
 
-            // Truy vấn dữ liệu Contestant từ cơ sở dữ liệu sử dụng phân trang
             Page<Contestant> contestantPage = contestantRepository.findAll(pageable);
 
-            // Kiểm tra xem trang có dữ liệu không
             if (contestantPage.hasContent()) {
                 List<ContestantResponse> contestantResponses = new ArrayList<>();
 
-                // Chuyển đổi danh sách Contestant thành danh sách ContestantResponse
                 for (Contestant contestant : contestantPage.getContent()) {
                     contestantResponses.add(ContestantMapper.toContestantResponse(contestant));
                 }
 
-                // Tạo đối tượng ResponseObj chứa danh sách ContestantResponse
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
                         .message("Load all Contestant successfully")
@@ -64,7 +59,6 @@ public class ContestantServiceImpl implements ContestantService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             } else {
-                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("No data found on page " + page)
@@ -74,7 +68,6 @@ public class ContestantServiceImpl implements ContestantService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                     .message("Failed to load Contestant data")

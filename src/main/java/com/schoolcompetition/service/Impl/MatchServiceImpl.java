@@ -34,22 +34,17 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public ResponseEntity<ResponseObj> getListMatches(int page, int size) {
         try {
-            // Tạo đối tượng Pageable để xác định trang và kích thước trang
             Pageable pageable = PageRequest.of(page, size);
 
-            // Truy vấn dữ liệu Match từ cơ sở dữ liệu sử dụng phân trang
             Page<Match> matchPage = matchRepository.findAll(pageable);
 
-            // Kiểm tra xem trang có dữ liệu không
             if (matchPage.hasContent()) {
                 List<MatchResponse> matchResponses = new ArrayList<>();
 
-                // Chuyển đổi danh sách Match thành danh sách MatchResponse
                 for (Match match : matchPage.getContent()) {
                     matchResponses.add(MatchMapper.toMatchResponse(match));
                 }
 
-                // Tạo đối tượng ResponseObj chứa danh sách MatchResponse
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
                         .message("Load all Match successfully")
@@ -57,7 +52,6 @@ public class MatchServiceImpl implements MatchService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             } else {
-                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("No data found on page " + page)
@@ -67,7 +61,6 @@ public class MatchServiceImpl implements MatchService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                     .message("Failed to load Match data")

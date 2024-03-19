@@ -31,26 +31,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<ResponseObj> getListUsers(int page, int size) {
         try {
-            // Tạo đối tượng Pageable để xác định trang và kích thước trang
             Pageable pageable = PageRequest.of(page, size);
 
-            // Truy vấn dữ liệu User từ cơ sở dữ liệu sử dụng phân trang
             Page<User> userPage = userRepository.findAll(pageable);
 
-            // Kiểm tra xem trang có dữ liệu không
             if (userPage.hasContent()) {
                 List<UserResponse> userResponses = new ArrayList<>();
 
-                // Chuyển đổi danh sách User thành danh sách UserResponse
                 for (User user : userPage.getContent()) {
                     userResponses.add(UserMapper.toUserResponse(user));
                 }
 
-                // Tạo một đối tượng Map chứa danh sách UserResponse
                 Map<String, Object> response = new HashMap<>();
                 response.put("User", userResponses);
 
-                // Tạo đối tượng ResponseObj chứa danh sách UserResponse
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
                         .message("Load all Users successfully")
@@ -58,7 +52,6 @@ public class UserServiceImpl implements UserService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             } else {
-                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("No data found on page " + page)
@@ -68,7 +61,6 @@ public class UserServiceImpl implements UserService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                     .message("Failed to load Users")

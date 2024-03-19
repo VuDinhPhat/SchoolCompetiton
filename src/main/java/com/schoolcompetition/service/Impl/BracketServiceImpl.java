@@ -39,22 +39,17 @@ public class BracketServiceImpl implements BracketService {
     @Override
     public ResponseEntity<ResponseObj> getListBrackets(int page, int size) {
         try {
-            // Tạo đối tượng Pageable để xác định trang và kích thước trang
             Pageable pageable = PageRequest.of(page, size);
 
-            // Truy vấn dữ liệu Bracket từ cơ sở dữ liệu sử dụng phân trang
             Page<Bracket> bracketPage = bracketRepository.findAll(pageable);
 
-            // Kiểm tra xem trang có dữ liệu không
             if (bracketPage.hasContent()) {
                 List<BracketResponse> bracketResponses = new ArrayList<>();
 
-                // Chuyển đổi danh sách Bracket thành danh sách BracketResponse
                 for (Bracket bracket : bracketPage.getContent()) {
                     bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
                 }
 
-                // Tạo đối tượng ResponseObj chứa danh sách BracketResponse
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
                         .message("Load all Bracket successfully")
@@ -62,7 +57,6 @@ public class BracketServiceImpl implements BracketService {
                         .build();
                 return ResponseEntity.ok().body(responseObj);
             } else {
-                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("No data found on page " + page)
@@ -72,7 +66,6 @@ public class BracketServiceImpl implements BracketService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
                     .message("Failed to load Bracket data")
