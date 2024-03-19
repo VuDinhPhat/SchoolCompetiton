@@ -35,11 +35,11 @@ public class CompetitionController {
         return competitionService.createCompetition(competitionRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateCompetition(@PathVariable int id, @RequestBody UpdateCompetitionRequest updateCompetitionRequest) {
+    public ResponseEntity<ResponseObj> updateCompetition(@RequestParam int id, @RequestBody UpdateCompetitionRequest updateCompetitionRequest) {
         return competitionService.updateCompetition(id, updateCompetitionRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteCar(@RequestParam int id) {
         return competitionService.deleteCompetition(id);
     }
 }

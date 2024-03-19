@@ -31,12 +31,12 @@ public class UserController {
         return userService.createUser(userRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateUser(@PathVariable int id, @RequestBody UpdateUserRequest userRequest) {
+    public ResponseEntity<ResponseObj> updateUser(@RequestParam int id, @RequestBody UpdateUserRequest userRequest) {
         return userService.updateUser(id, userRequest);
     }
 
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteUser(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteUser(@RequestParam int id) {
         return userService.deleteUser(id);
     }
 }

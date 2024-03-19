@@ -37,11 +37,11 @@ public class CoachController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateCoach(@PathVariable int id, @RequestBody UpdateCoachRequest updateCoachRequest) {
+    public ResponseEntity<ResponseObj> updateCoach(@RequestParam int id, @RequestBody UpdateCoachRequest updateCoachRequest) {
         return coachService.updateCoach(id, updateCoachRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteCoach(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteCoach(@RequestParam int id) {
         return coachService.deleteCoach(id);
     }
 }

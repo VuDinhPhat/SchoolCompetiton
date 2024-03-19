@@ -38,11 +38,11 @@ public class MatchController {
         return matchService.createMatch(matchRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateMatch(@PathVariable int id, @RequestBody UpdateMatchRequest matchRequest) {
+    public ResponseEntity<ResponseObj> updateMatch(@RequestParam int id, @RequestBody UpdateMatchRequest matchRequest) {
         return matchService.updateMatch(id, matchRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteMatch(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteMatch(@RequestParam int id) {
         return matchService.deleteMatch(id);
     }
 }

@@ -57,7 +57,7 @@ public class BracketController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateBracket(@PathVariable int id, @RequestBody UpdateBracketRequest bracketRequest) {
+    public ResponseEntity<ResponseObj> updateBracket(@RequestParam int id, @RequestBody UpdateBracketRequest bracketRequest) {
         return bracketService.updateBracket(id, bracketRequest);
     }
 }
