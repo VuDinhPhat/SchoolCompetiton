@@ -36,11 +36,11 @@ public class StudentController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateStudent(@PathVariable int id, @RequestBody UpdateStudentRequest studentRequest) {
+    public ResponseEntity<ResponseObj> updateStudent(@RequestParam int id, @RequestBody UpdateStudentRequest studentRequest) {
         return studentService.updateStudent(id, studentRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteStudent(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteStudent(@RequestParam int id) {
         return studentService.deleteStudent(id);
     }
 }

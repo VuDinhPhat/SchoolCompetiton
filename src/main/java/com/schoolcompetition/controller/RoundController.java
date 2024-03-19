@@ -37,11 +37,11 @@ public class RoundController {
         return roundService.createRound(roundRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateRound(@PathVariable int id, @RequestBody UpdateRoundRequest updateRoundRequest) {
+    public ResponseEntity<ResponseObj> updateRound(@RequestParam int id, @RequestBody UpdateRoundRequest updateRoundRequest) {
         return roundService.updateRound(id, updateRoundRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteRound(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteRound(@RequestParam int id) {
         return roundService.deleteRound(id);
     }
 }

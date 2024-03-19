@@ -34,11 +34,11 @@ public class ContestantController {
         return contestantService.createContestant(contestantRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateContestant(@PathVariable int id, @RequestBody UpdateContestantRequest contestantRequest) {
+    public ResponseEntity<ResponseObj> updateContestant(@RequestParam int id, @RequestBody UpdateContestantRequest contestantRequest) {
         return contestantService.updateContestant(id, contestantRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteContestant(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteContestant(@RequestParam int id) {
         return contestantService.deleteContestant(id);
     }
 }

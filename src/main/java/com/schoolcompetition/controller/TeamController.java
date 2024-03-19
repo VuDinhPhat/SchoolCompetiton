@@ -37,11 +37,11 @@ public class TeamController {
         return teamService.createTeam(teamRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateTeam(@PathVariable int id, @RequestBody UpdateTeamRequest updateTeam) {
+    public ResponseEntity<ResponseObj> updateTeam(@RequestParam int id, @RequestBody UpdateTeamRequest updateTeam) {
         return teamService.updateTeam(id, updateTeam);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteTeam(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteTeam(@RequestParam int id) {
         return teamService.deleteTeam(id);
     }
 }

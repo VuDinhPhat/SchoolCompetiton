@@ -39,11 +39,11 @@ public class CarController {
         return carService.createCar(carRequest);
     }
     @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateCar(@PathVariable int id, @RequestBody UpdateCarRequest carRequest) {
+    public ResponseEntity<ResponseObj> updateCar(@RequestParam int id, @RequestBody UpdateCarRequest carRequest) {
         return carService.updateCar(id, carRequest);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteCar(@RequestParam int id) {
         return carService.deleteCar(id);
     }
 }

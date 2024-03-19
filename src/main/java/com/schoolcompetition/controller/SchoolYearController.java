@@ -40,7 +40,7 @@ public class SchoolYearController {
         return schoolYearService.updateSchoolYear(id, requestSchoolYear);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteSchoolYear(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteSchoolYear(@RequestParam int id) {
         return schoolYearService.deleteSchoolYear(id);
     }
 }

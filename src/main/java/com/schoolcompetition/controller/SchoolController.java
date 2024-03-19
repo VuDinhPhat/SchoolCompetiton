@@ -37,7 +37,7 @@ public class SchoolController {
         return schoolService.updateSchool(id, requestSchool);
     }
     @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteSchool(@PathVariable int id) {
+    public ResponseEntity<ResponseObj> deleteSchool(@RequestParam int id) {
         return schoolService.deleteSchool(id);
     }
 }
