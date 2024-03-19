@@ -18,9 +18,10 @@ public class SchoolYearController {
     @Autowired
     SchoolYearService schoolYearService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return schoolYearService.getAllSchoolsYear();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return schoolYearService.getListSchoolsYear(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -30,12 +31,16 @@ public class SchoolYearController {
     @GetMapping(value = {"getByYear"})
     public ResponseEntity<ResponseObj> getByYear(@RequestParam int year) { return schoolYearService.getSchoolYearByYear(year);
     }
-    @PostMapping(value = {"/create"})
+    @PostMapping(value = {"create"})
     public ResponseEntity<ResponseObj> createSchoolYear(@RequestBody CreateSchoolYearRequest request) {
         return schoolYearService.createSchoolYear(request);
     }
     @PutMapping(value = {"update"})
     public ResponseEntity<ResponseObj> updateSchoolYear(@RequestParam int id, @RequestBody UpdateSchoolYearRequest requestSchoolYear) {
         return schoolYearService.updateSchoolYear(id, requestSchoolYear);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteSchoolYear(@PathVariable int id) {
+        return schoolYearService.deleteSchoolYear(id);
     }
 }

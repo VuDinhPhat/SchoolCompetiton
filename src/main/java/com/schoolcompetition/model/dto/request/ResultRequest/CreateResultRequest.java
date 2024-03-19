@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.request.ResultRequest;
 
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -23,4 +24,7 @@ public class CreateResultRequest {
 
     @NotNull
     int carId;
+
+    @NotNull
+    Status status;
 }

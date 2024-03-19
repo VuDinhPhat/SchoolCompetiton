@@ -16,9 +16,10 @@ public class SchoolController {
     @Autowired
     SchoolService schoolService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return schoolService.getAllSchools();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return schoolService.getListSchools(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -34,5 +35,9 @@ public class SchoolController {
     @PutMapping(value = {"update"})
     public ResponseEntity<ResponseObj> updateSchool(@RequestParam int id, @RequestBody UpdateSchoolRequest requestSchool) {
         return schoolService.updateSchool(id, requestSchool);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteSchool(@PathVariable int id) {
+        return schoolService.deleteSchool(id);
     }
 }

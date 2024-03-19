@@ -13,9 +13,11 @@ import java.util.List;
 
 @Service
 public interface StudentService {
-    ResponseEntity<ResponseObj> getAllStudent();
+    ResponseEntity<ResponseObj> getListStudents(int page, int size);
     ResponseEntity<ResponseObj> getStudentById(int id);
     ResponseEntity<ResponseObj> getStudentByName(String name);
     ResponseEntity<ResponseObj> createStudent(CreateStudentRequest coachRequest);
     ResponseEntity<ResponseObj> updateStudent(int id, UpdateStudentRequest coachRequest);
+    ResponseEntity<ResponseObj> deleteStudent(int id);
+
 }

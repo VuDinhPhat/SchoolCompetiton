@@ -14,9 +14,12 @@ import java.util.List;
 
 @Service
 public interface ContestantService {
-    ResponseEntity<ResponseObj> getAll();
+    ResponseEntity<ResponseObj> getListContestants(int page, int size);
 
     ResponseEntity<ResponseObj> getById(int id);
     ResponseEntity<ResponseObj> createContestant(CreateContestantRequest contestantRequest);
     ResponseEntity<ResponseObj> updateContestant(int id, UpdateContestantRequest contestantRequest);
+    ResponseEntity<ResponseObj> deleteContestant(int id);
+
+
 }

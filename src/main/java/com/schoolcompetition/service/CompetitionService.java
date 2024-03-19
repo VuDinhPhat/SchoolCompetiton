@@ -13,10 +13,12 @@ import java.util.List;
 
 @Service
 public interface CompetitionService {
-    ResponseEntity<ResponseObj> getAllCompetition();
+    ResponseEntity<ResponseObj> getListCompetitions(int page, int size);
 
     ResponseEntity<ResponseObj> getCompetitionById(int id);
     ResponseEntity<ResponseObj> getCompetitionByName(String name);
     ResponseEntity<ResponseObj> createCompetition(CreateCompetitionRequest competitionRequest);
     ResponseEntity<ResponseObj> updateCompetition(int id, UpdateCompetitionRequest updateCompetitionRequest);
+    ResponseEntity<ResponseObj> deleteCompetition(int id);
+
 }

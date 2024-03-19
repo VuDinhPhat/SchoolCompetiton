@@ -14,9 +14,11 @@ import java.util.List;
 
 @Service
 public interface ResultService {
-    ResponseEntity<ResponseObj> getAllResult();
+    ResponseEntity<ResponseObj> getListResults(int page, int size);
 
     ResponseEntity<ResponseObj> getResultById(int id);
     ResponseEntity<ResponseObj> createResult(CreateResultRequest resultRequest);
     ResponseEntity<ResponseObj> updateResult(int id, UpdateResultRequest resultRequest);
+    ResponseEntity<ResponseObj> deleteResult(int id);
+
 }

@@ -1,5 +1,7 @@
 package com.schoolcompetition.model.dto.request.StudentRequest;
 
+import com.schoolcompetition.enums.Gender;
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -18,7 +20,10 @@ public class CreateStudentRequest {
     Date dob;
 
     @NotNull
-    char sex;
+    Gender sex;
+
+    @NotNull
+    Status status;
 
     @NotNull
     int schoolId;

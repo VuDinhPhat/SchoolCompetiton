@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.request.CarRequest;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.model.entity.Team;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +22,8 @@ public class CreateCarRequest {
 
     @NotNull
     int teamId;
+
+    @NotNull
+    Status status;
+
 }

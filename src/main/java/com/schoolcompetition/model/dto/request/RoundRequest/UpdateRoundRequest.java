@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.request.RoundRequest;
 
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -12,4 +13,5 @@ public class UpdateRoundRequest {
     String name;
     String map;
     int competitionId;
+    Status status;
 }

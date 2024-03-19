@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.MatchMapper;
 import com.schoolcompetition.model.dto.request.MatchRequest.CreateMatchRequest;
 import com.schoolcompetition.model.dto.request.MatchRequest.UpdateMatchRequest;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Map;import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class MatchServiceImpl implements MatchService {
@@ -29,32 +32,51 @@ public class MatchServiceImpl implements MatchService {
     BracketRepository bracketRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> getAll() {
-        List<Match> matchList = matchRepository.findAll();
-        List<MatchResponse> matchResponses = new ArrayList<>();
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ResponseObj> getListMatches(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Match match : matchList) {
-            matchResponses.add(MatchMapper.toMatchResponse(match));
-        }
-        response.put("Match", matchResponses);
+            // Truy vấn dữ liệu Match từ cơ sở dữ liệu sử dụng phân trang
+            Page<Match> matchPage = matchRepository.findAll(pageable);
 
-        if (!matchResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (matchPage.hasContent()) {
+                List<MatchResponse> matchResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Match thành danh sách MatchResponse
+                for (Match match : matchPage.getContent()) {
+                    matchResponses.add(MatchMapper.toMatchResponse(match));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách MatchResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Match successfully")
+                        .data(matchResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Match successfully")
-                    .data(response)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Match data")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Match failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getById(int id) {
@@ -131,6 +153,7 @@ public class MatchServiceImpl implements MatchService {
             match.setPlace(createMatchRequest.getPlace());
             match.setLap(createMatchRequest.getLap());
             match.setBracket(bracket);
+            match.setStatus(createMatchRequest.getStatus());
 
             Match savedMatch = matchRepository.save(match);
 
@@ -176,6 +199,9 @@ public class MatchServiceImpl implements MatchService {
             if (updateMatchRequest.getPlace() != null) {
                 match.setPlace(updateMatchRequest.getPlace());
             }
+            if (updateMatchRequest.getStatus() != null) {
+                match.setStatus(updateMatchRequest.getStatus());
+            }
             if (updateMatchRequest.getLap() != 0) {
                 match.setLap(updateMatchRequest.getLap());
             }
@@ -212,6 +238,35 @@ public class MatchServiceImpl implements MatchService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteMatch(int id) {
+        Match matchToDelete = matchRepository.getReferenceById(id);
+        List<Match> matchList = matchRepository.findAll();
+
+        for (Match match : matchList) {
+            if (match.equals(matchToDelete)) {
+                match.setStatus(Status.IN_ACTIVE);
+                matchRepository.save(match);
+
+                MatchResponse matchResponse = MatchMapper.toMatchResponse(matchToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Match status changed to INACTIVE")
+                        .data(matchResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Match not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 
 }

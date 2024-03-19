@@ -1,13 +1,14 @@
 package com.schoolcompetition.controller;
 
+import com.schoolcompetition.model.dto.request.TeamRequest.CreateTeamRequest;
+import com.schoolcompetition.model.dto.request.TeamRequest.UpdateTeamRequest;
+import com.schoolcompetition.model.dto.request.UserRequest.CreateUserRequest;
+import com.schoolcompetition.model.dto.request.UserRequest.UpdateUserRequest;
 import com.schoolcompetition.model.dto.response.ResponseObj;
 import com.schoolcompetition.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -20,8 +21,22 @@ public class UserController {
         return userService.login(email, password);
     }
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return userService.getAll();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return userService.getListUsers(page, size);
+    }
+    @PostMapping("create")
+    public ResponseEntity<ResponseObj> createUser(@RequestBody CreateUserRequest userRequest) {
+        return userService.createUser(userRequest);
+    }
+    @PutMapping("update")
+    public ResponseEntity<ResponseObj> updateUser(@PathVariable int id, @RequestBody UpdateUserRequest userRequest) {
+        return userService.updateUser(id, userRequest);
+    }
+
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteUser(@PathVariable int id) {
+        return userService.deleteUser(id);
     }
 }

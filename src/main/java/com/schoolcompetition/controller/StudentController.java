@@ -18,9 +18,10 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return studentService.getAllStudent();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return studentService.getListStudents(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -29,13 +30,17 @@ public class StudentController {
     }
     @GetMapping(value = {"getByName"})
     public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return studentService.getStudentByName(name);}
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createStudent(@RequestBody CreateStudentRequest studentRequest) {
         return studentService.createStudent(studentRequest);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateStudent(@PathVariable int id, @RequestBody UpdateStudentRequest studentRequest) {
         return studentService.updateStudent(id, studentRequest);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteStudent(@PathVariable int id) {
+        return studentService.deleteStudent(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.SchoolMapper;
 import com.schoolcompetition.mapper.SchoolYearMapper;
 import com.schoolcompetition.model.dto.request.SchoolYearRequest.CreateSchoolYearRequest;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.util.Map;import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,30 +32,51 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
     SchoolYearRepository schoolYearRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> getAllSchoolsYear() {
-        List<SchoolYear> schoolYearsList = schoolYearRepository.findAll();
-        List<SchoolYearResponse> schoolYearResponses = new ArrayList<>();
+    public ResponseEntity<ResponseObj> getListSchoolsYear(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (SchoolYear schoolYear : schoolYearsList) {
-            schoolYearResponses.add(SchoolYearMapper.toSchoolYearResponse(schoolYear));
-        }
+            // Truy vấn dữ liệu SchoolYear từ cơ sở dữ liệu sử dụng phân trang
+            Page<SchoolYear> schoolYearPage = schoolYearRepository.findAll(pageable);
 
-        if (!schoolYearResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (schoolYearPage.hasContent()) {
+                List<SchoolYearResponse> schoolYearResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách SchoolYear thành danh sách SchoolYearResponse
+                for (SchoolYear schoolYear : schoolYearPage.getContent()) {
+                    schoolYearResponses.add(SchoolYearMapper.toSchoolYearResponse(schoolYear));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách SchoolYearResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all SchoolYears successfully")
+                        .data(schoolYearResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Schools successfully")
-                    .data(schoolYearResponses)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load SchoolYears")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all SchoolsYear failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getSchoolYearById(int id) {
@@ -123,6 +148,7 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
 
             SchoolYear schoolYear = new SchoolYear();
             schoolYear.setYear(requestSchoolYear.getYear());
+            schoolYear.setStatus(requestSchoolYear.getStatus());
 
             SchoolYear savedSchoolYear = schoolYearRepository.save(schoolYear);
 
@@ -160,9 +186,11 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Kiểm tra xem requestSchoolYear có chứa dữ liệu mới cho trường year không
             if (requestSchoolYear.getYear() != 0) {
                 schoolYear.setYear(requestSchoolYear.getYear());
+            }
+            if (requestSchoolYear.getStatus()!= null) {
+                schoolYear.setStatus(requestSchoolYear.getStatus());
             }
 
             SchoolYear updatedSchoolYear = schoolYearRepository.save(schoolYear);
@@ -184,4 +212,33 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteSchoolYear(int id) {
+        SchoolYear schoolYearToDelete = schoolYearRepository.getReferenceById(id);
+        List<SchoolYear> schoolYearList = schoolYearRepository.findAll();
+
+        for (SchoolYear schoolYear : schoolYearList) {
+            if (schoolYear.equals(schoolYearToDelete)) {
+                schoolYear.setStatus(Status.IN_ACTIVE);
+                schoolYearRepository.save(schoolYear);
+
+                SchoolYearResponse schoolYearResponse = SchoolYearMapper.toSchoolYearResponse(schoolYearToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("School year status changed to INACTIVE")
+                        .data(schoolYearResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("School year not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 }

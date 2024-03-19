@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.request.BracketRequest;
 
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +22,7 @@ public class CreateBracketRequest {
 
     @NotNull
     int roundId;
+
+    @NotNull
+    Status status;
 }

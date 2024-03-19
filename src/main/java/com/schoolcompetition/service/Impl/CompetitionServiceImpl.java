@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.CompetitionMapper;
 import com.schoolcompetition.model.dto.request.CompetitionRequest.CreateCompetitionRequest;
 import com.schoolcompetition.model.dto.request.CompetitionRequest.UpdateCompetitionRequest;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,33 +34,51 @@ public class CompetitionServiceImpl implements CompetitionService {
     SchoolYearRepository schoolYearRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> getAllCompetition(){
-        List<Competition> competitionList = competitionRepository.findAll();
-        List<CompetitionResponse> competitionResponses = new ArrayList<>();
-        Map<String, Object> response = new HashMap<>();
+    public ResponseEntity<ResponseObj> getListCompetitions(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (Competition competition : competitionList) {
-            competitionResponses.add(CompetitionMapper.toCompetitionResponse(competition));
-        }
-        response.put("Competition", competitionResponses);
+            // Truy vấn dữ liệu Competition từ cơ sở dữ liệu sử dụng phân trang
+            Page<Competition> competitionPage = competitionRepository.findAll(pageable);
 
-        if (!competitionResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (competitionPage.hasContent()) {
+                List<CompetitionResponse> competitionResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách Competition thành danh sách CompetitionResponse
+                for (Competition competition : competitionPage.getContent()) {
+                    competitionResponses.add(CompetitionMapper.toCompetitionResponse(competition));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách CompetitionResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Competition successfully")
+                        .data(competitionResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status(String.valueOf(HttpStatus.OK))
-                    .message("Load all Competition successfully")
-                    .data(response)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Competition data")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Competition failed")
-                .data(null)
-                .build();
-        return ResponseEntity.ok().body(responseObj);
-
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getCompetitionById(int id) {
@@ -118,7 +140,6 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Transactional
     public ResponseEntity<ResponseObj> createCompetition(CreateCompetitionRequest competitionRequest) {
         try {
-            // Kiểm tra xem schoolYearId trong request có tồn tại không
             SchoolYear schoolYear = schoolYearRepository.findById(competitionRequest.getSchoolYearId()).orElse(null);
             if (schoolYear == null) {
                 ResponseObj responseObj = ResponseObj.builder()
@@ -129,20 +150,17 @@ public class CompetitionServiceImpl implements CompetitionService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Tạo cuộc thi mới
             Competition competition = new Competition();
             competition.setName(competitionRequest.getName());
             competition.setDescription(competitionRequest.getDescription());
             competition.setHoldPlace(competitionRequest.getHoldPlace());
             competition.setSchoolYear(schoolYear);
+            competition.setStatus(competitionRequest.getStatus());
 
-            // Lưu cuộc thi mới vào cơ sở dữ liệu
             Competition savedCompetition = competitionRepository.save(competition);
 
-            // Chuyển đổi cuộc thi thành đối tượng response
             CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(savedCompetition);
 
-            // Tạo và trả về response thành công
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
                     .message("Competition created successfully")
@@ -151,7 +169,6 @@ public class CompetitionServiceImpl implements CompetitionService {
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về response thất bại nếu có lỗi xảy ra
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.BAD_REQUEST))
                     .message("Failed to create competition")
@@ -165,10 +182,8 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Transactional
     public ResponseEntity<ResponseObj> updateCompetition(int id, UpdateCompetitionRequest updateCompetitionRequest) {
         try {
-            // Tìm cuộc thi cần cập nhật trong cơ sở dữ liệu
             Competition competition = competitionRepository.findById(id).orElse(null);
             if (competition == null) {
-                // Trả về response not found nếu không tìm thấy cuộc thi
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.NOT_FOUND))
                         .message("Competition not found")
@@ -177,7 +192,6 @@ public class CompetitionServiceImpl implements CompetitionService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            // Cập nhật thông tin cuộc thi nếu các trường không null
             if (updateCompetitionRequest.getName() != null) {
                 competition.setName(updateCompetitionRequest.getName());
             }
@@ -187,10 +201,12 @@ public class CompetitionServiceImpl implements CompetitionService {
             if (updateCompetitionRequest.getHoldPlace() != null) {
                 competition.setHoldPlace(updateCompetitionRequest.getHoldPlace());
             }
+            if (updateCompetitionRequest.getStatus() != null) {
+                competition.setStatus(updateCompetitionRequest.getStatus());
+            }
             if (updateCompetitionRequest.getSchoolYearId() != 0) {
                 SchoolYear schoolYear = schoolYearRepository.findById(updateCompetitionRequest.getSchoolYearId()).orElse(null);
                 if (schoolYear == null) {
-                    // Trả về response not found nếu không tìm thấy năm học
                     ResponseObj responseObj = ResponseObj.builder()
                             .status(String.valueOf(HttpStatus.NOT_FOUND))
                             .message("School year not found")
@@ -201,10 +217,8 @@ public class CompetitionServiceImpl implements CompetitionService {
                 competition.setSchoolYear(schoolYear);
             }
 
-            // Lưu cuộc thi đã cập nhật vào cơ sở dữ liệu
             Competition updatedCompetition = competitionRepository.save(competition);
 
-            // Chuyển đổi cuộc thi đã cập nhật thành đối tượng response
             CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(updatedCompetition);
 
             // Tạo và trả về response thành công
@@ -216,7 +230,6 @@ public class CompetitionServiceImpl implements CompetitionService {
             return ResponseEntity.ok().body(responseObj);
         } catch (Exception e) {
             e.printStackTrace();
-            // Trả về response thất bại nếu có lỗi xảy ra
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.BAD_REQUEST))
                     .message("Failed to update competition")
@@ -225,6 +238,35 @@ public class CompetitionServiceImpl implements CompetitionService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteCompetition(int id) {
+        Competition competitionToDelete = competitionRepository.getReferenceById(id);
+        List<Competition> competitionList = competitionRepository.findAll();
+
+        for (Competition competition : competitionList) {
+            if (competition.equals(competitionToDelete)) {
+                competition.setStatus(Status.IN_ACTIVE);
+                competitionRepository.save(competition);
+
+                CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(competitionToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Competition status changed to INACTIVE")
+                        .data(competitionResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("Competition not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 
 
 }

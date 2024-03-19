@@ -1,5 +1,6 @@
 package com.schoolcompetition.service.Impl;
 
+import com.schoolcompetition.enums.Status;
 import com.schoolcompetition.mapper.SchoolMapper;
 import com.schoolcompetition.model.dto.request.SchoolRequest.CreateSchoolRequest;
 import com.schoolcompetition.model.dto.request.SchoolRequest.UpdateSchoolRequest;
@@ -17,6 +18,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map;import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class SchoolServiceImpl implements SchoolService {
@@ -24,30 +28,51 @@ public class SchoolServiceImpl implements SchoolService {
     SchoolRepository schoolRepository;
 
     @Override
-    public ResponseEntity<ResponseObj> getAllSchools() {
-        List<School> schoolList = schoolRepository.findAll();
-        List<SchoolResponse> schoolResponses = new ArrayList<>();
+    public ResponseEntity<ResponseObj> getListSchools(int page, int size) {
+        try {
+            // Tạo đối tượng Pageable để xác định trang và kích thước trang
+            Pageable pageable = PageRequest.of(page, size);
 
-        for (School school : schoolList) {
-            schoolResponses.add(SchoolMapper.toSchoolResponse(school));
-        }
+            // Truy vấn dữ liệu School từ cơ sở dữ liệu sử dụng phân trang
+            Page<School> schoolPage = schoolRepository.findAll(pageable);
 
-        if (!schoolResponses.isEmpty()) {
+            // Kiểm tra xem trang có dữ liệu không
+            if (schoolPage.hasContent()) {
+                List<SchoolResponse> schoolResponses = new ArrayList<>();
+
+                // Chuyển đổi danh sách School thành danh sách SchoolResponse
+                for (School school : schoolPage.getContent()) {
+                    schoolResponses.add(SchoolMapper.toSchoolResponse(school));
+                }
+
+                // Tạo đối tượng ResponseObj chứa danh sách SchoolResponse
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("Load all Schools successfully")
+                        .data(schoolResponses)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            } else {
+                // Trả về thông báo rằng không có dữ liệu nào được tìm thấy trên trang cụ thể
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.NOT_FOUND))
+                        .message("No data found on page " + page)
+                        .data(null)
+                        .build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Trả về thông báo lỗi nếu có vấn đề xảy ra khi lấy dữ liệu
             ResponseObj responseObj = ResponseObj.builder()
-                    .status("OK")
-                    .message("Load all Schools successfully")
-                    .data(schoolResponses)
+                    .status(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+                    .message("Failed to load Schools")
+                    .data(null)
                     .build();
-            return ResponseEntity.ok().body(responseObj);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseObj);
         }
-
-        ResponseObj responseObj = ResponseObj.builder()
-                .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("Load all Schools failed")
-                .data(null)
-                .build();
-        return ResponseEntity.badRequest().body(responseObj);
     }
+
 
     @Override
     public ResponseEntity<ResponseObj> getSchoolById(int id) {
@@ -107,6 +132,7 @@ public class SchoolServiceImpl implements SchoolService {
             School newSchool = new School();
             newSchool.setName(requestSchool.getName());
             newSchool.setAddress(requestSchool.getAddress());
+            newSchool.setStatus(requestSchool.getStatus());
 
             School savedSchool = schoolRepository.save(newSchool);
 
@@ -143,12 +169,15 @@ public class SchoolServiceImpl implements SchoolService {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
             }
 
-            if (requestSchool.getName() != null && !requestSchool.getName().isEmpty()) {
+            if (requestSchool.getName() != null) {
                 school.setName(requestSchool.getName());
             }
 
-            if (requestSchool.getAddress() != null && !requestSchool.getAddress().isEmpty()) {
+            if (requestSchool.getAddress() != null) {
                 school.setAddress(requestSchool.getAddress());
+            }
+            if (requestSchool.getStatus() != null) {
+                school.setStatus(requestSchool.getStatus());
             }
 
             School updatedSchool = schoolRepository.save(school);
@@ -170,4 +199,33 @@ public class SchoolServiceImpl implements SchoolService {
             return ResponseEntity.badRequest().body(responseObj);
         }
     }
+
+    @Override
+    public ResponseEntity<ResponseObj> deleteSchool(int id) {
+        School schoolToDelete = schoolRepository.getReferenceById(id);
+        List<School> schoolList = schoolRepository.findAll();
+
+        for (School school : schoolList) {
+            if (school.equals(schoolToDelete)) {
+                school.setStatus(Status.IN_ACTIVE);
+                schoolRepository.save(school);
+
+                SchoolResponse schoolResponse = SchoolMapper.toSchoolResponse(schoolToDelete);
+                ResponseObj responseObj = ResponseObj.builder()
+                        .status(String.valueOf(HttpStatus.OK))
+                        .message("School status changed to INACTIVE")
+                        .data(schoolResponse)
+                        .build();
+                return ResponseEntity.ok().body(responseObj);
+            }
+        }
+
+        ResponseObj responseObj = ResponseObj.builder()
+                .status(String.valueOf(HttpStatus.NOT_FOUND))
+                .message("School not found")
+                .data(null)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
 }

@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 public interface MatchService {
-    ResponseEntity<ResponseObj> getAll();
+    ResponseEntity<ResponseObj> getListMatches(int page, int size);
 
     ResponseEntity<ResponseObj> getById(int id);
     ResponseEntity<ResponseObj> getMatchByName(String name);
     ResponseEntity<ResponseObj> createMatch(CreateMatchRequest createMatchRequest);
     ResponseEntity<ResponseObj> updateMatch(int id, UpdateMatchRequest updateMatchRequest);
+    ResponseEntity<ResponseObj> deleteMatch(int id);
+
 }

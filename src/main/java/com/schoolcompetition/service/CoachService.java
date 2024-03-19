@@ -14,10 +14,12 @@ import java.util.List;
 
 @Service
 public interface CoachService {
-    ResponseEntity<ResponseObj> getAllCoach();
+    ResponseEntity<ResponseObj> getListCoaches(int page, int size);
 
     ResponseEntity<ResponseObj> getCoachById(int id);
     ResponseEntity<ResponseObj> getCoachByName(String name);
     ResponseEntity<ResponseObj> createCoach(CreateCoachRequest coachRequest);
     ResponseEntity<ResponseObj> updateCoach(int id, UpdateCoachRequest coachRequest);
+    ResponseEntity<ResponseObj> deleteCoach(int id);
+
 }

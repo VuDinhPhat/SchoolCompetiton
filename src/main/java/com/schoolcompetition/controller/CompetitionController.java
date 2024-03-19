@@ -20,21 +20,26 @@ public class CompetitionController {
     @Autowired
     CompetitionService competitionService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return competitionService.getAllCompetition();
+    @GetMapping("getList")
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return competitionService.getListCompetitions(page, size);
     }
 
     @GetMapping(value = {"getById"})
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
         return competitionService.getCompetitionById(id);
     }
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createCompetition(@RequestBody CreateCompetitionRequest competitionRequest) {
         return competitionService.createCompetition(competitionRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateCompetition(@PathVariable int id, @RequestBody UpdateCompetitionRequest updateCompetitionRequest) {
         return competitionService.updateCompetition(id, updateCompetitionRequest);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
+        return competitionService.deleteCompetition(id);
     }
 }

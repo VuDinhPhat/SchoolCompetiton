@@ -1,5 +1,6 @@
 package com.schoolcompetition.model.dto.request.TeamRequest;
 
+import com.schoolcompetition.enums.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -12,4 +13,6 @@ public class UpdateTeamRequest {
     String name;
     int coachId;
     int competitionId;
+    Status status;
+
 }

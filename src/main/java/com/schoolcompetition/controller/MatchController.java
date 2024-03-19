@@ -20,10 +20,12 @@ public class MatchController {
     @Autowired
     MatchService matchService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return matchService.getAll();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return matchService.getListMatches(page, size);
     }
+
 
     @GetMapping(value = {"getById"})
     public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
@@ -31,12 +33,16 @@ public class MatchController {
     }
     @GetMapping(value = {"getByName"})
     public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return matchService.getMatchByName(name);}
-    @PostMapping("/create")
+    @PostMapping("create")
     public ResponseEntity<ResponseObj> createMatch(@RequestBody CreateMatchRequest matchRequest) {
         return matchService.createMatch(matchRequest);
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateMatch(@PathVariable int id, @RequestBody UpdateMatchRequest matchRequest) {
         return matchService.updateMatch(id, matchRequest);
+    }
+    @PutMapping("delete")
+    public ResponseEntity<ResponseObj> deleteMatch(@PathVariable int id) {
+        return matchService.deleteMatch(id);
     }
 }

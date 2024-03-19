@@ -25,9 +25,10 @@ public class BracketController {
     @Autowired
     BracketService bracketService;
 
-    @GetMapping(value = {"getAll"})
-    public ResponseEntity<ResponseObj> getAll() {
-        return bracketService.getAllBracket();
+    @GetMapping(value = {"getList"})
+    public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        return bracketService.getListBrackets(page, size);
     }
 
     @GetMapping(value = {"getById"})
@@ -41,7 +42,7 @@ public class BracketController {
     }
 
 
-    @PostMapping(value = {"createBracket"})
+    @PostMapping(value = {"create"})
     public ResponseEntity<ResponseObj> createBracket(@Valid @RequestBody CreateBracketRequest createBracketRequest, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             HashMap<String, String> errors = ValidatorUtil.toErrors(bindingResult.getFieldErrors());
@@ -55,7 +56,7 @@ public class BracketController {
         return bracketService.createBracket(createBracketRequest, bindingResult);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("update")
     public ResponseEntity<ResponseObj> updateBracket(@PathVariable int id, @RequestBody UpdateBracketRequest bracketRequest) {
         return bracketService.updateBracket(id, bracketRequest);
     }

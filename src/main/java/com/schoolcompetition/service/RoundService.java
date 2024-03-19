@@ -14,10 +14,12 @@ import java.util.List;
 
 @Service
 public interface RoundService {
-    ResponseEntity<ResponseObj> getAllRound();
+    ResponseEntity<ResponseObj> getListRounds(int page, int size) ;
 
     ResponseEntity<ResponseObj> getRoundById(int id);
     ResponseEntity<ResponseObj> getRoundByName(String name);
     ResponseEntity<ResponseObj> createRound(CreateRoundRequest roundRequest);
     ResponseEntity<ResponseObj> updateRound(int id, UpdateRoundRequest roundRequest);
+    ResponseEntity<ResponseObj> deleteRound(int id);
+
 }
