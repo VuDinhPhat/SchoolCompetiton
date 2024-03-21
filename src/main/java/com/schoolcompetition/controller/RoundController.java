@@ -15,33 +15,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/round")
+@RequestMapping("/api/round-management")
 public class RoundController {
     @Autowired
     RoundService roundService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"rounds"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return roundService.getListRounds(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"round/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return roundService.getRoundById(id);
     }
-    @GetMapping(value = {"getByName"})
-    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return roundService.getRoundByName(name);}
-    @PostMapping("create")
+    @GetMapping(value = {"round/{name}"})
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return roundService.getRoundByName(name);}
+    @PostMapping("round")
     public ResponseEntity<ResponseObj> createRound(@RequestBody CreateRoundRequest roundRequest) {
         return roundService.createRound(roundRequest);
     }
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateRound(@RequestParam int id, @RequestBody UpdateRoundRequest updateRoundRequest) {
+    @PutMapping("round/{id}")
+    public ResponseEntity<ResponseObj> updateRound(@PathVariable int id, @RequestBody UpdateRoundRequest updateRoundRequest) {
         return roundService.updateRound(id, updateRoundRequest);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteRound(@RequestParam int id) {
+    @PutMapping("round-status/{id}")
+    public ResponseEntity<ResponseObj> deleteRound(@PathVariable int id) {
         return roundService.deleteRound(id);
     }
 }

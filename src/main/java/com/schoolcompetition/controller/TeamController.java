@@ -15,33 +15,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/team")
+@RequestMapping("/api/team-management")
 public class TeamController {
     @Autowired
     TeamService teamService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"teams"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return teamService.getListTeams(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"team/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return teamService.getTeamById(id);
     }
-    @GetMapping(value = {"getByName"})
-    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return teamService.getTeamByName(name);}
-    @PostMapping("create")
+
+    @GetMapping(value = {"team/{name}"})
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return teamService.getTeamByName(name);}
+
+    @PostMapping("team")
     public ResponseEntity<ResponseObj> createTeam(@RequestBody CreateTeamRequest teamRequest) {
         return teamService.createTeam(teamRequest);
     }
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateTeam(@RequestParam int id, @RequestBody UpdateTeamRequest updateTeam) {
+
+    @PutMapping("team/{id}")
+    public ResponseEntity<ResponseObj> updateTeam(@PathVariable int id, @RequestBody UpdateTeamRequest updateTeam) {
         return teamService.updateTeam(id, updateTeam);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteTeam(@RequestParam int id) {
+
+    @PutMapping("team-status/{id}")
+    public ResponseEntity<ResponseObj> deleteTeam(@PathVariable int id) {
         return teamService.deleteTeam(id);
     }
 }

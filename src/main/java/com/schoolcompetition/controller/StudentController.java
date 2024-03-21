@@ -13,34 +13,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping("/api/student-management")
 public class StudentController {
     @Autowired
     StudentService studentService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"students"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return studentService.getListStudents(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"student/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return studentService.getStudentById(id);
     }
-    @GetMapping(value = {"getByName"})
-    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return studentService.getStudentByName(name);}
-    @PostMapping("create")
+
+    @GetMapping(value = {"student/{name}"})
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return studentService.getStudentByName(name);}
+
+    @PostMapping("student")
     public ResponseEntity<ResponseObj> createStudent(@RequestBody CreateStudentRequest studentRequest) {
         return studentService.createStudent(studentRequest);
     }
 
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateStudent(@RequestParam int id, @RequestBody UpdateStudentRequest studentRequest) {
+    @PutMapping("student/{id}")
+    public ResponseEntity<ResponseObj> updateStudent(@PathVariable int id, @RequestBody UpdateStudentRequest studentRequest) {
         return studentService.updateStudent(id, studentRequest);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteStudent(@RequestParam int id) {
+
+    @PutMapping("student/{id}")
+    public ResponseEntity<ResponseObj> deleteStudent(@PathVariable int id) {
         return studentService.deleteStudent(id);
     }
 }

@@ -13,34 +13,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/schoolyear")
+@RequestMapping("/api/schoolyear-management")
 public class SchoolYearController {
     @Autowired
     SchoolYearService schoolYearService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"schoolyears"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return schoolYearService.getListSchoolsYear(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"schoolyear/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return schoolYearService.getSchoolYearById(id);
     }
-    @GetMapping(value = {"getByYear"})
-    public ResponseEntity<ResponseObj> getByYear(@RequestParam int year) { return schoolYearService.getSchoolYearByYear(year);
+
+    @GetMapping(value = {"schoolyear/{year}"})
+    public ResponseEntity<ResponseObj> getByYear(@PathVariable int year) { return schoolYearService.getSchoolYearByYear(year);
     }
-    @PostMapping(value = {"create"})
+
+    @PostMapping(value = {"schoolyear"})
     public ResponseEntity<ResponseObj> createSchoolYear(@RequestBody CreateSchoolYearRequest request) {
         return schoolYearService.createSchoolYear(request);
     }
-    @PutMapping(value = {"update"})
-    public ResponseEntity<ResponseObj> updateSchoolYear(@RequestParam int id, @RequestBody UpdateSchoolYearRequest requestSchoolYear) {
+
+    @PutMapping(value = {"schoolyear/{id}"})
+    public ResponseEntity<ResponseObj> updateSchoolYear(@PathVariable int id, @RequestBody UpdateSchoolYearRequest requestSchoolYear) {
         return schoolYearService.updateSchoolYear(id, requestSchoolYear);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteSchoolYear(@RequestParam int id) {
+
+    @PutMapping("schoolyear-status/{id}")
+    public ResponseEntity<ResponseObj> deleteSchoolYear(@PathVariable int id) {
         return schoolYearService.deleteSchoolYear(id);
     }
 }

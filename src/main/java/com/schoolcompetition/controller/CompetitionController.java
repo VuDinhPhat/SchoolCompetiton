@@ -15,31 +15,37 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/competition")
+@RequestMapping("/api/competition-management")
 public class CompetitionController {
     @Autowired
     CompetitionService competitionService;
 
-    @GetMapping("getList")
+    @GetMapping("competitions")
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return competitionService.getListCompetitions(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"competition/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return competitionService.getCompetitionById(id);
     }
-    @PostMapping("create")
+
+    @GetMapping("competition/{name}")
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) {
+        return competitionService.getCompetitionByName(name);
+    }
+
+    @PostMapping("competition")
     public ResponseEntity<ResponseObj> createCompetition(@RequestBody CreateCompetitionRequest competitionRequest) {
         return competitionService.createCompetition(competitionRequest);
     }
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateCompetition(@RequestParam int id, @RequestBody UpdateCompetitionRequest updateCompetitionRequest) {
+    @PutMapping("competition/{id}")
+    public ResponseEntity<ResponseObj> updateCompetition(@PathVariable int id, @RequestBody UpdateCompetitionRequest updateCompetitionRequest) {
         return competitionService.updateCompetition(id, updateCompetitionRequest);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteCar(@RequestParam int id) {
+    @PutMapping("competition-status/{id}")
+    public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
         return competitionService.deleteCompetition(id);
     }
 }

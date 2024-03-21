@@ -23,6 +23,7 @@ public class CreateBracketRequest {
     @NotNull
     int roundId;
 
+
     @NotNull
     Status status;
 }

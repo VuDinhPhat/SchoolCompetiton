@@ -15,35 +15,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/car")
+@RequestMapping("/api/car-management")
 public class CarController {
     @Autowired
     CarService carService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"cars"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return carService.getListCars(page, size);
     }
 
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"car/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return carService.getCarById(id);
     }
-    @GetMapping(value = {"getByName"})
-    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return carService.getCarByName(name);
+    @GetMapping(value = {"car/{name}"})
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return carService.getCarByName(name);
     }
-    @PostMapping("create")
+    @PostMapping("car")
     public ResponseEntity<ResponseObj> createCar(@RequestBody CreateCarRequest carRequest) {
         return carService.createCar(carRequest);
     }
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateCar(@RequestParam int id, @RequestBody UpdateCarRequest carRequest) {
+    @PutMapping("car/{id}")
+    public ResponseEntity<ResponseObj> updateCar(@PathVariable int id, @RequestBody UpdateCarRequest carRequest) {
         return carService.updateCar(id, carRequest);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteCar(@RequestParam int id) {
+    @PutMapping("car-status/{id}")
+    public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
         return carService.deleteCar(id);
     }
 }

@@ -11,33 +11,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/school")
+@RequestMapping("/api/school-management")
 public class SchoolController {
     @Autowired
     SchoolService schoolService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"schools"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return schoolService.getListSchools(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"school/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return schoolService.getSchoolById(id);
     }
-    @GetMapping(value = {"getByName"})
-    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return schoolService.getSchoolByName(name);}
-    @PostMapping(value = {"create"})
+    @GetMapping(value = {"school/{name}"})
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return schoolService.getSchoolByName(name);}
+    @PostMapping(value = {"school"})
     public ResponseEntity<ResponseObj> createSchool(@RequestBody CreateSchoolRequest request) {
         return schoolService.createSchool(request);
     }
-    @PutMapping(value = {"update"})
-    public ResponseEntity<ResponseObj> updateSchool(@RequestParam int id, @RequestBody UpdateSchoolRequest requestSchool) {
+    @PutMapping(value = {"school/{id}"})
+    public ResponseEntity<ResponseObj> updateSchool(@PathVariable int id, @RequestBody UpdateSchoolRequest requestSchool) {
         return schoolService.updateSchool(id, requestSchool);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteSchool(@RequestParam int id) {
+    @PutMapping("school-status/{id}")
+    public ResponseEntity<ResponseObj> deleteSchool(@PathVariable int id) {
         return schoolService.deleteSchool(id);
     }
 }

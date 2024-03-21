@@ -14,31 +14,34 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/contestant")
+@RequestMapping("/api/contestant-management")
 public class ContestantController {
     @Autowired
     ContestantService contestantService;
 
-    @GetMapping("getList")
+    @GetMapping("contestants")
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return contestantService.getListContestants(page, size);
     }
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"contestant/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return contestantService.getById(id);
     }
-    @PostMapping("create")
+
+    @PostMapping("contestant")
     public ResponseEntity<ResponseObj> createContestant(@RequestBody CreateContestantRequest contestantRequest) {
         return contestantService.createContestant(contestantRequest);
     }
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateContestant(@RequestParam int id, @RequestBody UpdateContestantRequest contestantRequest) {
+
+    @PutMapping("contestant/{id}")
+    public ResponseEntity<ResponseObj> updateContestant(@PathVariable int id, @RequestBody UpdateContestantRequest contestantRequest) {
         return contestantService.updateContestant(id, contestantRequest);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteContestant(@RequestParam int id) {
+
+    @PutMapping("contestant-status/{id}")
+    public ResponseEntity<ResponseObj> deleteContestant(@PathVariable int id) {
         return contestantService.deleteContestant(id);
     }
 }

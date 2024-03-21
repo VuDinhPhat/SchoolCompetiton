@@ -15,34 +15,38 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/match")
+@RequestMapping("/api/match-management")
 public class MatchController {
     @Autowired
     MatchService matchService;
 
-    @GetMapping(value = {"getList"})
+    @GetMapping(value = {"matches"})
     public ResponseEntity<ResponseObj> getAll(@RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size) {
         return matchService.getListMatches(page, size);
     }
 
 
-    @GetMapping(value = {"getById"})
-    public ResponseEntity<ResponseObj> getById(@RequestParam int id) {
+    @GetMapping(value = {"match/{id}"})
+    public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return matchService.getById(id);
     }
-    @GetMapping(value = {"getByName"})
-    public ResponseEntity<ResponseObj> getByName(@RequestParam String name) { return matchService.getMatchByName(name);}
-    @PostMapping("create")
+
+    @GetMapping(value = {"match/{name}"})
+    public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return matchService.getMatchByName(name);}
+
+    @PostMapping("match")
     public ResponseEntity<ResponseObj> createMatch(@RequestBody CreateMatchRequest matchRequest) {
         return matchService.createMatch(matchRequest);
     }
-    @PutMapping("update")
-    public ResponseEntity<ResponseObj> updateMatch(@RequestParam int id, @RequestBody UpdateMatchRequest matchRequest) {
+
+    @PutMapping("match/{id}")
+    public ResponseEntity<ResponseObj> updateMatch(@PathVariable int id, @RequestBody UpdateMatchRequest matchRequest) {
         return matchService.updateMatch(id, matchRequest);
     }
-    @PutMapping("delete")
-    public ResponseEntity<ResponseObj> deleteMatch(@RequestParam int id) {
+
+    @PutMapping("match-status/{id}")
+    public ResponseEntity<ResponseObj> deleteMatch(@PathVariable int id) {
         return matchService.deleteMatch(id);
     }
 }
