@@ -20,5 +20,6 @@ public interface TeamService {
     ResponseEntity<ResponseObj> createTeam(CreateTeamRequest teamRequest);
     ResponseEntity<ResponseObj> updateTeam(int id, UpdateTeamRequest teamRequest);
     ResponseEntity<ResponseObj> deleteTeam(int id);
+    int countTotalTeam();
 
 }

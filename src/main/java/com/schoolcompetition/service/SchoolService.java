@@ -17,5 +17,6 @@ public interface SchoolService {
     ResponseEntity<ResponseObj> createSchool(CreateSchoolRequest requestSchool);
     ResponseEntity<ResponseObj> updateSchool(int id, UpdateSchoolRequest requestSchool);
     ResponseEntity<ResponseObj> deleteSchool(int id);
+    int countTotalSchool();
 
 }

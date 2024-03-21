@@ -20,5 +20,6 @@ public interface ResultService {
     ResponseEntity<ResponseObj> createResult(CreateResultRequest resultRequest);
     ResponseEntity<ResponseObj> updateResult(int id, UpdateResultRequest resultRequest);
     ResponseEntity<ResponseObj> deleteResult(int id);
+    int countTotalResult();
 
 }

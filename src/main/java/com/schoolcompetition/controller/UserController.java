@@ -39,4 +39,6 @@ public class UserController {
     public ResponseEntity<ResponseObj> deleteUser(@RequestParam int id) {
         return userService.deleteUser(id);
     }
+    @GetMapping("total")
+    public int countTotalUser(){return userService.countTotalUser();}
 }

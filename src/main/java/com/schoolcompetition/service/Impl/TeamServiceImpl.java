@@ -85,7 +85,7 @@ public class TeamServiceImpl implements TeamService {
     public ResponseEntity<ResponseObj> getTeamById(int id) {
         Team team = teamRepository.findById(id).orElse(null);
 
-        if (team != null) {
+        if (team != null && team.getStatus().equals(Status.ACTIVE)) {
             TeamResponse teamResponse = TeamMapper.toTeamResponse(team);
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
@@ -110,7 +110,7 @@ public class TeamServiceImpl implements TeamService {
         Map<String, Object> response = new HashMap<>();
 
         for (Team team : teamList) {
-            if (team.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (team.getName().toLowerCase().contains(name.toLowerCase()) && team.getStatus().equals(Status.ACTIVE)) {
                 teamResponses.add(TeamMapper.toTeamResponse(team));
             }
         }
@@ -278,6 +278,11 @@ public class TeamServiceImpl implements TeamService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
+    @Override
+    public int countTotalTeam() {
+        List<Team> teamList = teamRepository.findAll();
+        return teamList.size();
+    }
 
 
 }

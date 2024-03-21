@@ -22,4 +22,5 @@ public interface CoachService {
     ResponseEntity<ResponseObj> updateCoach(int id, UpdateCoachRequest coachRequest);
     ResponseEntity<ResponseObj> deleteCoach(int id);
 
+    int countTotalCoach();
 }

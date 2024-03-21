@@ -44,4 +44,6 @@ public class ContestantController {
     public ResponseEntity<ResponseObj> deleteContestant(@PathVariable int id) {
         return contestantService.deleteContestant(id);
     }
+    @GetMapping("total")
+    public int countContestantTotal(){return contestantService.countTotalContestant();}
 }

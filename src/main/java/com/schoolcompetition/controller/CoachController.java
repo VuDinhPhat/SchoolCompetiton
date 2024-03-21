@@ -30,7 +30,7 @@ public class CoachController {
         return coachService.getCoachById(id);
     }
 
-    @GetMapping(value = {"coach/{name}"})
+    @GetMapping(value = {"coach/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return coachService.getCoachByName(name);}
 
     @PostMapping("coach")
@@ -47,4 +47,6 @@ public class CoachController {
     public ResponseEntity<ResponseObj> deleteCoach(@PathVariable int id) {
         return coachService.deleteCoach(id);
     }
+    @GetMapping("total")
+    public  int countTotalCoach(){return  coachService.countTotalCoach();}
 }

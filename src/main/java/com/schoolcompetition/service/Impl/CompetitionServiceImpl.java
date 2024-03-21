@@ -79,7 +79,7 @@ public class CompetitionServiceImpl implements CompetitionService {
         List<Competition> competitionList = competitionRepository.findAll();
 
         for (Competition c : competitionList) {
-            if(c.equals(competition)) {
+            if(c.equals(competition) && c.getStatus().equals(Status.ACTIVE)) {
                 CompetitionResponse competitionResponse = CompetitionMapper.toCompetitionResponse(competition);
 
                 ResponseObj responseObj = ResponseObj.builder()
@@ -106,7 +106,7 @@ public class CompetitionServiceImpl implements CompetitionService {
         Map<String, Object> response = new HashMap<>();
 
         for (Competition competition : competitionList) {
-            if (competition.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (competition.getName().toLowerCase().contains(name.toLowerCase()) && competition.getStatus().equals(Status.ACTIVE)) {
                 competitionResponses.add(CompetitionMapper.toCompetitionResponse(competition));
             }
         }
@@ -260,6 +260,11 @@ public class CompetitionServiceImpl implements CompetitionService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
+    @Override
+    public int countTotalCompetition() {
+        List<Competition> competitionList = competitionRepository.findAll();
+        return competitionList.size();
+    }
 
 
 }

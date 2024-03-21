@@ -71,7 +71,7 @@ public class SchoolServiceImpl implements SchoolService {
     public ResponseEntity<ResponseObj> getSchoolById(int id) {
         School school = schoolRepository.findById(id).orElse(null);
 
-        if (school != null) {
+        if (school != null && school.getStatus().equals(Status.ACTIVE)) {
             SchoolResponse schoolResponse = SchoolMapper.toSchoolResponse(school);
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
@@ -96,7 +96,7 @@ public class SchoolServiceImpl implements SchoolService {
         Map<String, Object> response = new HashMap<>();
 
         for (School school : schoolList) {
-            if (school.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (school.getName().toLowerCase().contains(name.toLowerCase()) && school.getStatus().equals(Status.ACTIVE)) {
                 schoolResponses.add(SchoolMapper.toSchoolResponse(school));
             }
         }
@@ -219,6 +219,12 @@ public class SchoolServiceImpl implements SchoolService {
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
+    @Override
+    public int countTotalSchool() {
+        List<School> schoolList = schoolRepository.findAll();
+        return schoolList.size();
     }
 
 }

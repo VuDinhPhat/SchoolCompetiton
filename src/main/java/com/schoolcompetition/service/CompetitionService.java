@@ -21,4 +21,5 @@ public interface CompetitionService {
     ResponseEntity<ResponseObj> updateCompetition(int id, UpdateCompetitionRequest updateCompetitionRequest);
     ResponseEntity<ResponseObj> deleteCompetition(int id);
 
+    int countTotalCompetition();
 }

@@ -109,7 +109,7 @@ public class BracketServiceImpl implements BracketService {
         Map<String, Object> response = new HashMap<>();
 
         for (Bracket bracket : bracketList) {
-            if (bracket.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (bracket.getName().toLowerCase().contains(name.toLowerCase()) && bracket.getStatus().equals(Status.ACTIVE)) {
                 bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
             }
         }

@@ -21,5 +21,6 @@ public interface ContestantService {
     ResponseEntity<ResponseObj> updateContestant(int id, UpdateContestantRequest contestantRequest);
     ResponseEntity<ResponseObj> deleteContestant(int id);
 
+    int countTotalContestant();
 
 }

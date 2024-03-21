@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<ResponseObj> getById(int id) {
         User user = userRepository.getReferenceById(id);
 
-        if (user != null) {
+        if (user != null && user.getStatus().equals(Status.ACTIVE)) {
             UserResponse userResponse = UserMapper.toUserResponse(user);
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
@@ -174,6 +174,12 @@ public class UserServiceImpl implements UserService {
                     .build();
             return ResponseEntity.badRequest().body(responseObj);
         }
+    }
+
+    @Override
+    public int countTotalUser() {
+        List<User> userList = userRepository.findAll();
+        return userList.size();
     }
 
     @Override

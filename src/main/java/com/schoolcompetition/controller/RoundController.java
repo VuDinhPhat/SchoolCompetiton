@@ -30,7 +30,7 @@ public class RoundController {
     public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return roundService.getRoundById(id);
     }
-    @GetMapping(value = {"round/{name}"})
+    @GetMapping(value = {"round/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return roundService.getRoundByName(name);}
     @PostMapping("round")
     public ResponseEntity<ResponseObj> createRound(@RequestBody CreateRoundRequest roundRequest) {
@@ -44,4 +44,6 @@ public class RoundController {
     public ResponseEntity<ResponseObj> deleteRound(@PathVariable int id) {
         return roundService.deleteRound(id);
     }
+    @GetMapping("total")
+    public int countTotalRound(){return roundService.countTotalRound();}
 }

@@ -84,7 +84,7 @@ public class ResultServiceImpl implements ResultService {
         List<Result> resultList = resultRepository.findAll();
 
         for (Result r : resultList) {
-            if (r.equals(result)) {
+            if (r.equals(result) && r.getStatus().equals(Status.ACTIVE)) {
                 ResultResponse resultResponse = ResultMapper.toResultResponse(result);
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
@@ -275,6 +275,12 @@ public class ResultServiceImpl implements ResultService {
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
+    @Override
+    public int countTotalResult() {
+        List<Result> resultList = resultRepository.findAll();
+        return resultList.size();
     }
 
 }

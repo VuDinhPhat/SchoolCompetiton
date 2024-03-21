@@ -31,7 +31,7 @@ public class TeamController {
         return teamService.getTeamById(id);
     }
 
-    @GetMapping(value = {"team/{name}"})
+    @GetMapping(value = {"team/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return teamService.getTeamByName(name);}
 
     @PostMapping("team")
@@ -48,4 +48,6 @@ public class TeamController {
     public ResponseEntity<ResponseObj> deleteTeam(@PathVariable int id) {
         return teamService.deleteTeam(id);
     }
+    @GetMapping
+    public int countTotalTeam(){return teamService.countTotalTeam();}
 }

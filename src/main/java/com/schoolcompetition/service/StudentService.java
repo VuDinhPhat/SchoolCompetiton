@@ -19,5 +19,6 @@ public interface StudentService {
     ResponseEntity<ResponseObj> createStudent(CreateStudentRequest coachRequest);
     ResponseEntity<ResponseObj> updateStudent(int id, UpdateStudentRequest coachRequest);
     ResponseEntity<ResponseObj> deleteStudent(int id);
+    int countTotalStudent();
 
 }
