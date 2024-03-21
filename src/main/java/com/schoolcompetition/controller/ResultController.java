@@ -35,10 +35,12 @@ public class ResultController {
     public ResponseEntity<ResponseObj> createResult(@RequestBody CreateResultRequest resultRequest) {
         return resultService.createResult(resultRequest);
     }
+
     @PutMapping("result/{id}")
     public ResponseEntity<ResponseObj> updateResult(@PathVariable int id, @RequestBody UpdateResultRequest resultRequest) {
         return resultService.updateResult(id, resultRequest);
     }
+
     @PutMapping("result-status/{id}")
     public ResponseEntity<ResponseObj> deleteResult(@PathVariable int id) {
         return resultService.deleteResult(id);

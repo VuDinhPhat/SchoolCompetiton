@@ -1,9 +1,12 @@
 package com.schoolcompetition.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.schoolcompetition.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -27,8 +30,9 @@ public class Car {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToOne(mappedBy = "car")
-    private Result result;
+    @OneToMany(mappedBy = "car")
+    @JsonIgnore
+    private List<Result> results;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

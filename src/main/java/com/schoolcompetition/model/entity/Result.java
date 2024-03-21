@@ -28,7 +28,7 @@ public class Result {
     @JoinColumn(name = "match_id")
     private Match match;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
 

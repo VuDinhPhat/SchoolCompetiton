@@ -42,7 +42,7 @@ public class StudentController {
         return studentService.updateStudent(id, studentRequest);
     }
 
-    @PutMapping("student/{id}")
+    @PutMapping("student-status/{id}")
     public ResponseEntity<ResponseObj> deleteStudent(@PathVariable int id) {
         return studentService.deleteStudent(id);
     }
