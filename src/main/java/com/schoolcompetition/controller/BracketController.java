@@ -31,16 +31,15 @@ public class BracketController {
         return bracketService.getListBrackets(page, size);
     }
 
-    @GetMapping(value = {"bracket/{id}"})
+    @GetMapping(value = {"/bracket/{id}"})
     public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return bracketService.getBracketById(id);
     }
 
-    @GetMapping(value = {"bracket/{name}"})
+    @GetMapping(value = {"bracket/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) {
         return bracketService.getByName(name);
     }
-
 
     @PostMapping(value = {"bracket"})
     public ResponseEntity<ResponseObj> createBracket(@Valid @RequestBody CreateBracketRequest createBracketRequest, BindingResult bindingResult) {
@@ -64,5 +63,10 @@ public class BracketController {
     @PutMapping("bracket-status/{id}")
     public ResponseEntity<ResponseObj> deleteBracket(@PathVariable int id) {
         return bracketService.deleteBracket(id);
+    }
+
+    @GetMapping("total")
+    public int countTotal() {
+        return bracketService.countTotal();
     }
 }

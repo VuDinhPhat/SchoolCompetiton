@@ -12,6 +12,7 @@ public class ResultMapper {
                 .contestant(result.getContestant())
                 .match(result.getMatch())
                 .status(result.getStatus())
+                .car(result.getCar())
                 .build();
     }
 }

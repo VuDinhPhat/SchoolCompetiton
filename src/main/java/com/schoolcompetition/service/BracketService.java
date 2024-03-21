@@ -22,5 +22,6 @@ public interface BracketService {
     ResponseEntity<ResponseObj> updateBracket(int id, UpdateBracketRequest bracketRequest);
     ResponseEntity<ResponseObj> deleteBracket(int id);
 
+    int countTotal();
 
 }

@@ -243,6 +243,9 @@ public class BracketServiceImpl implements BracketService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
-
-
+    @Override
+    public int countTotal() {
+        List<Bracket> bracketList = bracketRepository.findAll();
+        return bracketList.size();
+    }
 }
