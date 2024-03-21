@@ -48,6 +48,6 @@ public class TeamController {
     public ResponseEntity<ResponseObj> deleteTeam(@PathVariable int id) {
         return teamService.deleteTeam(id);
     }
-    @GetMapping
+    @GetMapping("total")
     public int countTotalTeam(){return teamService.countTotalTeam();}
 }
