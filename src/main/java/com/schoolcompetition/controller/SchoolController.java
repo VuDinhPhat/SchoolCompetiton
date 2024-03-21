@@ -26,7 +26,7 @@ public class SchoolController {
     public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return schoolService.getSchoolById(id);
     }
-    @GetMapping(value = {"school/{name}"})
+    @GetMapping(value = {"school/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return schoolService.getSchoolByName(name);}
     @PostMapping(value = {"school"})
     public ResponseEntity<ResponseObj> createSchool(@RequestBody CreateSchoolRequest request) {
@@ -40,4 +40,6 @@ public class SchoolController {
     public ResponseEntity<ResponseObj> deleteSchool(@PathVariable int id) {
         return schoolService.deleteSchool(id);
     }
+    @GetMapping("total")
+    public int countTotalSchool(){return schoolService.countTotalSchool();}
 }

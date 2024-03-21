@@ -77,7 +77,7 @@ public class MatchServiceImpl implements MatchService {
         List<Match> matchList = matchRepository.findAll();
 
         for (Match m : matchList) {
-            if (m.equals(match)) {
+            if (m.equals(match) && m.getStatus().equals(Status.ACTIVE)) {
                 MatchResponse matchResponse = MatchMapper.toMatchResponse(match);
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
@@ -103,7 +103,7 @@ public class MatchServiceImpl implements MatchService {
         Map<String, Object> response = new HashMap<>();
 
         for (Match match : matchList) {
-            if (match.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (match.getName().toLowerCase().contains(name.toLowerCase()) && match.getStatus().equals(Status.ACTIVE)) {
                 matchResponses.add(MatchMapper.toMatchResponse(match));
             }
         }
@@ -260,6 +260,11 @@ public class MatchServiceImpl implements MatchService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
+    @Override
+    public int countTotalMatch() {
+        List<Match> matchList = matchRepository.findAll();
+        return matchList.size();
+    }
 
 
 }

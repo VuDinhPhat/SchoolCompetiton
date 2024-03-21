@@ -84,7 +84,7 @@ public class ContestantServiceImpl implements ContestantService {
         List<Contestant> contestantList = contestantRepository.findAll();
 
         for (Contestant c : contestantList) {
-            if (c.equals(contestant)) {
+            if (c.equals(contestant) && c.getStatus().equals(Status.ACTIVE)) {
                 ContestantResponse contestantResponse = ContestantMapper.toContestantResponse(contestant);
 
                 ResponseObj responseObj = ResponseObj.builder()
@@ -273,6 +273,12 @@ public class ContestantServiceImpl implements ContestantService {
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
+    @Override
+    public int countTotalContestant() {
+        List<Contestant> contestantList = contestantRepository.findAll();
+        return contestantList.size();
     }
 
 

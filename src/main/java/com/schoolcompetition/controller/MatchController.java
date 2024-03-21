@@ -32,7 +32,7 @@ public class MatchController {
         return matchService.getById(id);
     }
 
-    @GetMapping(value = {"match/{name}"})
+    @GetMapping(value = {"match/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return matchService.getMatchByName(name);}
 
     @PostMapping("match")
@@ -49,4 +49,6 @@ public class MatchController {
     public ResponseEntity<ResponseObj> deleteMatch(@PathVariable int id) {
         return matchService.deleteMatch(id);
     }
+    @GetMapping
+    public int countTotalMatch(){return matchService.countTotalMatch();}
 }

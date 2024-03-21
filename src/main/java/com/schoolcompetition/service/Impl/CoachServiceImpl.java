@@ -81,7 +81,7 @@ public class CoachServiceImpl implements CoachService {
         List<Coach> coachList = coachRepository.findAll();
 
         for (Coach c : coachList) {
-            if (c.equals(coach)) {
+            if (c.equals(coach) && c.getStatus().equals(Status.ACTIVE)) {
                 CoachResponse coachResponse = CoachMapper.toCoachResponse(coach);
 
                 ResponseObj responseObj = ResponseObj.builder()
@@ -108,7 +108,7 @@ public class CoachServiceImpl implements CoachService {
         Map<String, Object> response = new HashMap<>();
 
         for (Coach coach : coachList) {
-            if (coach.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (coach.getName().toLowerCase().contains(name.toLowerCase()) && coach.getStatus().equals(Status.ACTIVE)) {
 
                 coachResponses.add(CoachMapper.toCoachResponse(coach));
             }
@@ -261,6 +261,12 @@ public class CoachServiceImpl implements CoachService {
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
+    @Override
+    public int countTotalCoach() {
+        List<Coach> coachList = coachRepository.findAll();
+        return coachList.size();
     }
 
 

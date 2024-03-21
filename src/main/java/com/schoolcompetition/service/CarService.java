@@ -22,4 +22,5 @@ public interface CarService {
     ResponseEntity<ResponseObj> updateCar(int id, UpdateCarRequest carRequest);
     ResponseEntity<ResponseObj> deleteCar(int id);
 
+    int countTotalCar();
 }

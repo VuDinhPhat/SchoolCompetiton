@@ -19,5 +19,6 @@ public interface MatchService {
     ResponseEntity<ResponseObj> createMatch(CreateMatchRequest createMatchRequest);
     ResponseEntity<ResponseObj> updateMatch(int id, UpdateMatchRequest updateMatchRequest);
     ResponseEntity<ResponseObj> deleteMatch(int id);
+    int countTotalMatch();
 
 }

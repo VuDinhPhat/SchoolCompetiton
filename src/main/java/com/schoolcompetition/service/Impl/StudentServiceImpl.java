@@ -259,5 +259,11 @@ public class StudentServiceImpl implements StudentService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
+    @Override
+    public int countTotalStudent() {
+        List<Student> studentList = studentRepository.findAll();
+        return studentList.size();
+    }
+
 
 }

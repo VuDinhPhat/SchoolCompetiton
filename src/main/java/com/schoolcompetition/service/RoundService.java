@@ -21,5 +21,6 @@ public interface RoundService {
     ResponseEntity<ResponseObj> createRound(CreateRoundRequest roundRequest);
     ResponseEntity<ResponseObj> updateRound(int id, UpdateRoundRequest roundRequest);
     ResponseEntity<ResponseObj> deleteRound(int id);
+    int countTotalRound();
 
 }

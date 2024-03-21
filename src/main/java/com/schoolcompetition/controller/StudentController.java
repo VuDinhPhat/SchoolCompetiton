@@ -29,7 +29,7 @@ public class StudentController {
         return studentService.getStudentById(id);
     }
 
-    @GetMapping(value = {"student/{name}"})
+    @GetMapping(value = {"student/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return studentService.getStudentByName(name);}
 
     @PostMapping("student")
@@ -46,4 +46,7 @@ public class StudentController {
     public ResponseEntity<ResponseObj> deleteStudent(@PathVariable int id) {
         return studentService.deleteStudent(id);
     }
+    @GetMapping("total")
+    public int countTotalStudent(){return studentService.countTotalStudent();}
+
 }

@@ -17,6 +17,6 @@ public interface SchoolYearService {
     ResponseEntity<ResponseObj> createSchoolYear(CreateSchoolYearRequest requestSchoolYear);
     ResponseEntity<ResponseObj> updateSchoolYear(int id, UpdateSchoolYearRequest requestSchoolYear);
     ResponseEntity<ResponseObj> deleteSchoolYear(int id);
-
+    int countTotalSchoolYear();
 
 }

@@ -76,7 +76,7 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
     public ResponseEntity<ResponseObj> getSchoolYearById(int id) {
         SchoolYear schoolYear = schoolYearRepository.findById(id).orElse(null);
 
-        if (schoolYear != null) {
+        if (schoolYear != null && schoolYear.getStatus().equals(Status.ACTIVE)) {
             SchoolYearResponse schoolYearResponse = SchoolYearMapper.toSchoolYearResponse(schoolYear);
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
@@ -101,7 +101,7 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
         Map<String, Object> response = new HashMap<>();
 
         for (SchoolYear schoolYear : schoolYearList) {
-            if (schoolYear.getYear() == year) {
+            if (schoolYear.getYear() == year && schoolYear.getStatus().equals(Status.ACTIVE)) {
                 schoolYearResponses.add(SchoolYearMapper.toSchoolYearResponse(schoolYear));
             }
         }
@@ -233,6 +233,12 @@ public class SchoolYearServiceImpl implements SchoolYearService  {
                 .data(null)
                 .build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
+    }
+
+    @Override
+    public int countTotalSchoolYear() {
+        List<SchoolYear> schoolYearList = schoolYearRepository.findAll();
+        return schoolYearList.size();
     }
 
 }

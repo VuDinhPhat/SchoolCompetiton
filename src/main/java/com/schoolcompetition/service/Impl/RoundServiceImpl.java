@@ -79,7 +79,7 @@ public class RoundServiceImpl implements RoundService {
     public ResponseEntity<ResponseObj> getRoundById(int id) {
         Round round = roundRepository.findById(id).orElse(null);
 
-        if (round != null) {
+        if (round != null && round.getStatus().equals(Status.ACTIVE)) {
             RoundResponse roundResponse = RoundMapper.toRoundResponse(round);
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
@@ -104,7 +104,7 @@ public class RoundServiceImpl implements RoundService {
         Map<String, Object> response = new HashMap<>();
 
         for (Round round : roundList) {
-            if (round.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (round.getName().toLowerCase().contains(name.toLowerCase()) && round.getStatus().equals(Status.ACTIVE)) {
                 roundResponses.add(RoundMapper.toRoundResponse(round));
             }
         }
@@ -254,6 +254,11 @@ public class RoundServiceImpl implements RoundService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
+    @Override
+    public int countTotalRound() {
+        List<Round> roundList = roundRepository.findAll();
+        return roundList.size();
+    }
 
 
 }

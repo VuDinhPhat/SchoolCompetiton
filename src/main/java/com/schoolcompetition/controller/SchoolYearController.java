@@ -47,4 +47,6 @@ public class SchoolYearController {
     public ResponseEntity<ResponseObj> deleteSchoolYear(@PathVariable int id) {
         return schoolYearService.deleteSchoolYear(id);
     }
+    @GetMapping
+    public int countTotalSchoolYear(){return schoolYearService.countTotalSchoolYear();}
 }

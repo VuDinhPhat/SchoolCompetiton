@@ -31,7 +31,7 @@ public class CompetitionController {
         return competitionService.getCompetitionById(id);
     }
 
-    @GetMapping("competition/{name}")
+    @GetMapping("competition/name/{name}")
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) {
         return competitionService.getCompetitionByName(name);
     }
@@ -48,4 +48,6 @@ public class CompetitionController {
     public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
         return competitionService.deleteCompetition(id);
     }
+    @GetMapping("total")
+    public int countTotalCompetition(){return competitionService.countTotalCompetition();}
 }

@@ -45,4 +45,6 @@ public class ResultController {
     public ResponseEntity<ResponseObj> deleteResult(@PathVariable int id) {
         return resultService.deleteResult(id);
     }
+    @GetMapping("total")
+    public int countTotalResult(){return resultService.countTotalResult();}
 }

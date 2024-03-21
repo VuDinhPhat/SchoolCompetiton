@@ -31,7 +31,7 @@ public class CarController {
     public ResponseEntity<ResponseObj> getById(@PathVariable int id) {
         return carService.getCarById(id);
     }
-    @GetMapping(value = {"car/{name}"})
+    @GetMapping(value = {"car/name/{name}"})
     public ResponseEntity<ResponseObj> getByName(@PathVariable String name) { return carService.getCarByName(name);
     }
     @PostMapping("car")
@@ -46,4 +46,6 @@ public class CarController {
     public ResponseEntity<ResponseObj> deleteCar(@PathVariable int id) {
         return carService.deleteCar(id);
     }
+    @GetMapping("Total")
+    public  int countTotalCar(){return carService.countTotalCar();}
 }

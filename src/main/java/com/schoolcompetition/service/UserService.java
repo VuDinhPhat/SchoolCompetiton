@@ -17,5 +17,6 @@ public interface UserService {
     ResponseEntity<ResponseObj> deleteUser(int id);
     ResponseEntity<ResponseObj> updateUser(int id, UpdateUserRequest userRequest);
     ResponseEntity<ResponseObj> createUser(CreateUserRequest userRequest);
+    int countTotalUser();
 
 }

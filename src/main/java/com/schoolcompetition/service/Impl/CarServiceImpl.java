@@ -78,7 +78,7 @@ public class CarServiceImpl implements CarService {
         List<Car> carList = carRepository.findAll();
 
         for (Car c : carList) {
-            if (c.equals(car)) {
+            if (c.equals(car) && c.getStatus().equals(Status.ACTIVE)) {
                 CarResponse carResponse = CarMapper.toCarResponse(car);
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
@@ -91,7 +91,7 @@ public class CarServiceImpl implements CarService {
 
         ResponseObj responseObj = ResponseObj.builder()
                 .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("No record matching")
+                .message("Invalid request")
                 .data(null)
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
@@ -104,7 +104,7 @@ public class CarServiceImpl implements CarService {
         Map<String, Object> response = new HashMap<>();
 
         for (Car car : carList) {
-            if (car.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (car.getName().toLowerCase().contains(name.toLowerCase()) && car.getStatus().equals(Status.ACTIVE)) {
                 carResponses.add(CarMapper.toCarResponse(car));
             }
         }
@@ -260,6 +260,11 @@ public class CarServiceImpl implements CarService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseObj);
     }
 
+    @Override
+    public int countTotalCar() {
+        List<Car> carList = carRepository.findAll();
+        return carList.size();
+    }
 
 
 }
