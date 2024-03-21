@@ -29,7 +29,7 @@ public class SchoolYearController {
         return schoolYearService.getSchoolYearById(id);
     }
 
-    @GetMapping(value = {"schoolyear/{year}"})
+    @GetMapping(value = {"schoolyear/year/{year}"})
     public ResponseEntity<ResponseObj> getByYear(@PathVariable int year) { return schoolYearService.getSchoolYearByYear(year);
     }
 
@@ -47,6 +47,6 @@ public class SchoolYearController {
     public ResponseEntity<ResponseObj> deleteSchoolYear(@PathVariable int id) {
         return schoolYearService.deleteSchoolYear(id);
     }
-    @GetMapping
+    @GetMapping("total")
     public int countTotalSchoolYear(){return schoolYearService.countTotalSchoolYear();}
 }

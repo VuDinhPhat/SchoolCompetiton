@@ -80,7 +80,7 @@ public class StudentServiceImpl implements StudentService {
     public ResponseEntity<ResponseObj> getStudentById(int id) {
         Student student = studentRepository.findById(id).orElse(null);
 
-        if (student != null) {
+        if (student != null && student.getStatus().equals(Status.ACTIVE)) {
             StudentResponse studentResponse = StudentMapper.toStudentResponse(student);
             ResponseObj responseObj = ResponseObj.builder()
                     .status(String.valueOf(HttpStatus.OK))
@@ -105,7 +105,7 @@ public class StudentServiceImpl implements StudentService {
         Map<String, Object> response = new HashMap<>();
 
         for (Student student : studentList) {
-            if (student.getName().toLowerCase().contains(name.toLowerCase())) {
+            if (student.getName().toLowerCase().contains(name.toLowerCase()) && student.getStatus().equals(Status.ACTIVE)) {
                 studentResponses.add(StudentMapper.toStudentResponse(student));
             }
         }

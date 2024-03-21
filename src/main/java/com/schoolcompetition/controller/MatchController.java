@@ -49,6 +49,6 @@ public class MatchController {
     public ResponseEntity<ResponseObj> deleteMatch(@PathVariable int id) {
         return matchService.deleteMatch(id);
     }
-    @GetMapping
+    @GetMapping("total")
     public int countTotalMatch(){return matchService.countTotalMatch();}
 }
