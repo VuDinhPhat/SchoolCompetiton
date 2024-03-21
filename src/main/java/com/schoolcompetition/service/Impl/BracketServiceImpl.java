@@ -47,7 +47,9 @@ public class BracketServiceImpl implements BracketService {
                 List<BracketResponse> bracketResponses = new ArrayList<>();
 
                 for (Bracket bracket : bracketPage.getContent()) {
-                    bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
+                    if (bracket.getStatus().equals(Status.ACTIVE)) {
+                        bracketResponses.add(BrackerMapper.toBracketResponse(bracket));
+                    }
                 }
 
                 ResponseObj responseObj = ResponseObj.builder()
@@ -81,7 +83,7 @@ public class BracketServiceImpl implements BracketService {
         List<Bracket> bracketList = bracketRepository.findAll();
 
         for (Bracket bracket1 : bracketList) {
-            if (bracket1.equals(bracket)) {
+            if (bracket1.equals(bracket) && bracket1.getStatus().equals(Status.ACTIVE)) {
                 BracketResponse bracketResponse = BrackerMapper.toBracketResponse(bracket);
                 ResponseObj responseObj = ResponseObj.builder()
                         .status(String.valueOf(HttpStatus.OK))
@@ -94,7 +96,7 @@ public class BracketServiceImpl implements BracketService {
 
         ResponseObj responseObj = ResponseObj.builder()
                 .status(String.valueOf(HttpStatus.BAD_REQUEST))
-                .message("No record matching")
+                .message("Invalid request")
                 .data(null)
                 .build();
         return ResponseEntity.badRequest().body(responseObj);
